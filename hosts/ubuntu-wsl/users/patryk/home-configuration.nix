@@ -1,14 +1,9 @@
 {
   pkgs,
   config,
-  inputs,
-  system,
   ...
 }:
 {
-  home.username = "patryk";
-  home.homeDirectory = "/home/patryk";
-
   home.stateVersion = "25.05";
 
   home.packages = with pkgs; [
@@ -70,14 +65,11 @@
   };
   programs.nh = {
     enable = true;
-    flake = "${config.home.homeDirectory}/.config/home-manager";
+    flake = "${config.home.homeDirectory}/dotfiles";
     clean = {
       enable = true;
       dates = "weekly";
       extraArgs = "--keep 5 --keep-since 14d";
     };
   };
-
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
 }
