@@ -23,7 +23,6 @@
     devenv
     oci-cli
     terraform
-    fzf
 
     # C/C++
     gcc
@@ -64,11 +63,7 @@
     plugins = with pkgs; [
       {
         name = "autopair";
-        src = fishPlugins.autopair;
-      }
-      {
-        name = "fzf-fish";
-        src = fishPlugins.fzf-fish;
+        src = fishPlugins.autopair.src;
       }
       {
         name = "abbr-tips";
@@ -80,6 +75,11 @@
         };
       }
     ];
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableFishIntegration = true;
   };
 
   programs.nix-your-shell.enable = true;
