@@ -100,8 +100,21 @@
     nix-direnv.enable = true;
   };
 
+  programs.git = {
+    enable = true;
+    settings = {
+      init.defaultBranch = "main";
+      user = {
+        name = "Patryk Przybysz";
+        email = "pprzybysz04@outlook.com";
+        github = "patryk-przybysz";
+      };
+    };
+  };
+
   programs.gh = {
     enable = true;
+    gitCredentialHelper.enable = true;
   };
 
   nix = {
