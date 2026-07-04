@@ -6,7 +6,13 @@
 {
   home.stateVersion = "25.05";
 
+  services.podman = {
+    enable = true;
+    settings.containers.compose_warning_logs = false;
+  };
+
   home.packages = with pkgs; [
+    podman-compose
     docker-language-server
     ormolu
 
@@ -48,6 +54,12 @@
       if test -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
         source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
       end
+
+      # Rootless podman needs setuid newuidmap from system-manager wrappers.
+      # /etc/profile.d/system-manager-path.sh is not sourced by fish.
+      if test -d /run/wrappers/bin
+        fish_add_path -m /run/wrappers/bin
+      end
     '';
     plugins = with pkgs; [
       {
@@ -78,6 +90,8 @@
 
   programs.zoxide.enable = true;
   programs.fd.enable = true;
+  programs.bat.enable = true;
+  programs.ripgrep.enable = true;
   programs.htop.enable = true;
   programs.jq.enable = true;
   programs.zellij.enable = true;
