@@ -86,7 +86,13 @@
   };
 
   programs.nix-your-shell.enable = true;
-  programs.starship.enable = true;
+  programs.starship = {
+    enable = true;
+    presets = [ "nerd-font-symbols" ];
+    settings = {
+      nix_shell.heuristic = true;
+    };
+  };
 
   programs.bun.enable = true;
   programs.uv.enable = true;
