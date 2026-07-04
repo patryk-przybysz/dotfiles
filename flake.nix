@@ -9,6 +9,9 @@
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    system-manager.url = "github:numtide/system-manager";
+    system-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
