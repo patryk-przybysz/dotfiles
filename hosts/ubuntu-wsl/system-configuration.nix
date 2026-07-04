@@ -21,8 +21,7 @@
 
   users.users.patryk = {
     isNormalUser = true;
-    shell = pkgs.fish;
-    ignoreShellProgramCheck = true;
+    shell = pkgs.bash;
     extraGroups = [
       "libvirt"
     ];

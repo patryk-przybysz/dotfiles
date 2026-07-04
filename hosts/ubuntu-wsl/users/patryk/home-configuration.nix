@@ -46,20 +46,23 @@
 
   fonts.fontconfig.enable = true;
 
+  programs.bash = {
+    enable = true;
+    # Keep bash as login shell (POSIX); exec fish for interactive use.
+    # HM .bash_profile sources .profile then .bashrc for login shells.
+    # https://nixos.wiki/wiki/Fish#Setting_fish_as_your_shell
+    initExtra = ''
+      if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" \
+            && -z ''${BASH_EXECUTION_STRING} \
+            && -z ''${IN_NIX_SHELL:-} ]]; then
+        shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+        exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+      fi
+    '';
+  };
+
   programs.fish = {
     enable = true;
-    shellInit = ''
-      # Nix
-      if test -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
-        source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
-      end
-
-      # Rootless podman needs setuid newuidmap from system-manager wrappers.
-      # /etc/profile.d/system-manager-path.sh is not sourced by fish.
-      if test -d /run/wrappers/bin
-        fish_add_path -m /run/wrappers/bin
-      end
-    '';
     plugins = with pkgs; [
       {
         name = "autopair";
