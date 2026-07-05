@@ -17,6 +17,7 @@
   };
 
   home.packages = with pkgs; [
+    inputs.sem.packages.${pkgs.system}.default
     podman-compose
     docker-language-server
     ormolu

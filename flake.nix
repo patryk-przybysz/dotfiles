@@ -24,6 +24,9 @@
 
     nix-minecraft.url = "github:Infinidoge/nix-minecraft";
     nix-minecraft.inputs.nixpkgs.follows = "nixpkgs";
+
+    sem.url = "github:Ataraxy-Labs/sem";
+    sem.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
