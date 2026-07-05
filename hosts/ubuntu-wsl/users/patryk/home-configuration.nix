@@ -2,6 +2,7 @@
   pkgs,
   config,
   inputs,
+  perSystem,
   ...
 }:
 {
@@ -17,7 +18,7 @@
   };
 
   home.packages = with pkgs; [
-    inputs.sem.packages.${pkgs.system}.default
+    perSystem.sem.default
     podman-compose
     docker-language-server
     ormolu
