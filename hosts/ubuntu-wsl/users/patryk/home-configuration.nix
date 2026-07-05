@@ -130,6 +130,13 @@
       };
     };
 
+    jujutsu = {
+      enable = true;
+      settings.user = {
+        inherit (config.programs.git.settings.user) name email;
+      };
+    };
+
     gh = {
       enable = true;
       gitCredentialHelper.enable = true;
