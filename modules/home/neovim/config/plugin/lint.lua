@@ -1,4 +1,18 @@
 local lint = require("lint")
+
+local efm = "stdin:%l:%c %m,stdin:%l %m"
+lint.linters.markdownlint = {
+	cmd = "markdownlint-cli2",
+	stdin = true,
+	args = { "-" },
+	ignore_exitcode = true,
+	stream = "stderr",
+	parser = require("lint.parser").from_errorformat(efm, {
+		source = "markdownlint",
+		severity = vim.diagnostic.severity.WARN,
+	}),
+}
+
 lint.linters_by_ft = {
 	markdown = { "markdownlint" },
 }
