@@ -1,9 +1,14 @@
 {
   pkgs,
   config,
+  inputs,
   ...
 }:
 {
+  imports = [
+    inputs.self.homeModules.neovim
+  ];
+
   home.stateVersion = "25.05";
 
   services.podman = {

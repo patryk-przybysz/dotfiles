@@ -12,12 +12,21 @@
 
     system-manager.url = "github:numtide/system-manager";
     system-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    gen-luarc.url = "github:mrcjkb/nix-gen-luarc-json";
+    gen-luarc.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     inputs:
     inputs.blueprint {
       inherit inputs;
-      nixpkgs.config.allowUnfree = true;
+      nixpkgs = {
+        config.allowUnfree = true;
+        overlays = [
+          inputs.gen-luarc.overlays.default
+          (import ./modules/home/neovim/overlay.nix {inherit inputs;})
+        ];
+      };
     };
 }
