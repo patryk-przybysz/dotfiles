@@ -132,16 +132,6 @@
       enable = true;
       gitCredentialHelper.enable = true;
     };
-
-    nh = {
-      enable = true;
-      flake = "${config.home.homeDirectory}/dotfiles";
-      clean = {
-        enable = true;
-        dates = "weekly";
-        extraArgs = "--keep 5 --keep-since 14d";
-      };
-    };
   };
 
   nix = {
