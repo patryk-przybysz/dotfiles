@@ -51,84 +51,97 @@
 
   fonts.fontconfig.enable = true;
 
-  programs.bash = {
-    enable = true;
-    # Keep bash as login shell (POSIX); exec fish for interactive use.
-    # HM .bash_profile sources .profile then .bashrc for login shells.
-    # https://nixos.wiki/wiki/Fish#Setting_fish_as_your_shell
-    initExtra = ''
-      if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" \
-            && -z ''${BASH_EXECUTION_STRING} \
-            && -z ''${IN_NIX_SHELL:-} ]]; then
-        shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
-        exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
-      fi
-    '';
-  };
-
-  programs.fish = {
-    enable = true;
-    plugins = with pkgs; [
-      {
-        name = "autopair";
-        src = fishPlugins.autopair.src;
-      }
-      {
-        name = "abbr-tips";
-        src = fetchFromGitHub {
-          owner = "gazorby";
-          repo = "fish-abbreviation-tips";
-          rev = "v0.7.0";
-          hash = "sha256-F1t81VliD+v6WEWqj1c1ehFBXzqLyumx5vV46s/FZRU=";
-        };
-      }
-    ];
-  };
-
-  programs.fzf = {
-    enable = true;
-    enableFishIntegration = true;
-  };
-
-  programs.nix-your-shell.enable = true;
-  programs.starship = {
-    enable = true;
-    presets = [ "nerd-font-symbols" ];
-    settings = {
-      nix_shell.heuristic = true;
+  programs = {
+    bash = {
+      enable = true;
+      # Keep bash as login shell (POSIX); exec fish for interactive use.
+      # HM .bash_profile sources .profile then .bashrc for login shells.
+      # https://nixos.wiki/wiki/Fish#Setting_fish_as_your_shell
+      initExtra = ''
+        if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" \
+              && -z ''${BASH_EXECUTION_STRING} \
+              && -z ''${IN_NIX_SHELL:-} ]]; then
+          shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+          exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+        fi
+      '';
     };
-  };
 
-  programs.bun.enable = true;
-  programs.uv.enable = true;
+    fish = {
+      enable = true;
+      plugins = with pkgs; [
+        {
+          name = "autopair";
+          src = fishPlugins.autopair.src;
+        }
+        {
+          name = "abbr-tips";
+          src = fetchFromGitHub {
+            owner = "gazorby";
+            repo = "fish-abbreviation-tips";
+            rev = "v0.7.0";
+            hash = "sha256-F1t81VliD+v6WEWqj1c1ehFBXzqLyumx5vV46s/FZRU=";
+          };
+        }
+      ];
+    };
 
-  programs.zoxide.enable = true;
-  programs.fd.enable = true;
-  programs.bat.enable = true;
-  programs.ripgrep.enable = true;
-  programs.htop.enable = true;
-  programs.jq.enable = true;
-  programs.zellij.enable = true;
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
+    fzf = {
+      enable = true;
+      enableFishIntegration = true;
+    };
 
-  programs.git = {
-    enable = true;
-    settings = {
-      init.defaultBranch = "main";
-      user = {
-        name = "Patryk Przybysz";
-        email = "pprzybysz04@outlook.com";
-        github = "patryk-przybysz";
+    nix-your-shell.enable = true;
+
+    starship = {
+      enable = true;
+      presets = [ "nerd-font-symbols" ];
+      settings = {
+        nix_shell.heuristic = true;
       };
     };
-  };
 
-  programs.gh = {
-    enable = true;
-    gitCredentialHelper.enable = true;
+    bun.enable = true;
+    uv.enable = true;
+    zoxide.enable = true;
+    fd.enable = true;
+    bat.enable = true;
+    ripgrep.enable = true;
+    htop.enable = true;
+    jq.enable = true;
+    zellij.enable = true;
+
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+
+    git = {
+      enable = true;
+      settings = {
+        init.defaultBranch = "main";
+        user = {
+          name = "Patryk Przybysz";
+          email = "pprzybysz04@outlook.com";
+          github = "patryk-przybysz";
+        };
+      };
+    };
+
+    gh = {
+      enable = true;
+      gitCredentialHelper.enable = true;
+    };
+
+    nh = {
+      enable = true;
+      flake = "${config.home.homeDirectory}/dotfiles";
+      clean = {
+        enable = true;
+        dates = "weekly";
+        extraArgs = "--keep 5 --keep-since 14d";
+      };
+    };
   };
 
   nix = {
@@ -139,15 +152,6 @@
         "flakes"
       ];
       auto-optimise-store = true;
-    };
-  };
-  programs.nh = {
-    enable = true;
-    flake = "${config.home.homeDirectory}/dotfiles";
-    clean = {
-      enable = true;
-      dates = "weekly";
-      extraArgs = "--keep 5 --keep-since 14d";
     };
   };
 }

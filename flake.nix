@@ -15,6 +15,12 @@
 
     gen-luarc.url = "github:mrcjkb/nix-gen-luarc-json";
     gen-luarc.inputs.nixpkgs.follows = "nixpkgs";
+
+    treefmt.url = "github:numtide/treefmt-nix";
+    treefmt.inputs.nixpkgs.follows = "nixpkgs";
+
+    git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -25,7 +31,7 @@
         config.allowUnfree = true;
         overlays = [
           inputs.gen-luarc.overlays.default
-          (import ./modules/home/neovim/overlay.nix {inherit inputs;})
+          (import ./modules/home/neovim/overlay.nix { inherit inputs; })
         ];
       };
     };

@@ -1,5 +1,7 @@
-{inputs}: final: prev:
-with final.lib; let
+{ inputs }:
+final: prev:
+with final.lib;
+let
   pkgs = final;
 
   pkgs-locked = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
@@ -61,7 +63,8 @@ with final.lib; let
     markdownlint-cli2
     ripgrep
   ];
-in {
+in
+{
   nvim = mkNeovim {
     plugins = all-plugins;
     inherit extraPackages;

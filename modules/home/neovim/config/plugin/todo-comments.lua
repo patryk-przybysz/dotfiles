@@ -1,1 +1,1 @@
-require('todo-comments').setup { signs = false }
+require("todo-comments").setup({ signs = false })
