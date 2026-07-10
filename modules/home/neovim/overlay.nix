@@ -31,6 +31,7 @@ let
     (nvim-treesitter.withPlugins (p: [
       p.bash
       p.c
+      p.cpp
       p.diff
       p.html
       p.javascript
@@ -53,6 +54,7 @@ let
   ];
 
   extraPackages = with pkgs; [
+    clang-tools
     lua-language-server
     nil
     nixfmt
