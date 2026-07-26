@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   home.packages = [ pkgs.nvim ];
-  environment.variables = {
+  home.sessionVariables = {
     EDITOR = "nvim";
+    VISUAL = "nvim";
   };
 }
