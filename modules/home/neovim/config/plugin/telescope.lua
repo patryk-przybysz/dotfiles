@@ -1,5 +1,17 @@
 require("telescope").setup({
 	extensions = {
+		file_browser = {
+			theme = "ivy",
+			hijack_netrw = true,
+			previewer = false,
+			prompt_title = "File Browser",
+			-- ivy uses absolute line counts (not 0–1 fractions)
+			layout_config = {
+				height = function(_, _, max_lines)
+					return max_lines
+				end,
+			},
+		},
 		["ui-select"] = {
 			require("telescope.themes").get_dropdown(),
 		},
@@ -8,8 +20,14 @@ require("telescope").setup({
 
 pcall(require("telescope").load_extension, "fzf")
 pcall(require("telescope").load_extension, "ui-select")
+pcall(require("telescope").load_extension, "file_browser")
 
 local builtin = require("telescope.builtin")
+
+local function open_file_browser(opts)
+	require("telescope").extensions.file_browser.file_browser(opts)
+end
+
 vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
 vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
@@ -38,3 +56,19 @@ end, { desc = "[S]earch [/] in Open Files" })
 vim.keymap.set("n", "<leader>sn", function()
 	builtin.find_files({ cwd = vim.fn.stdpath("config") })
 end, { desc = "[S]earch [N]eovim files" })
+
+vim.keymap.set("n", "<leader>fn", function()
+	local full_path = vim.api.nvim_buf_get_name(0)
+	local dir = vim.fn.fnamemodify(full_path, ":h")
+	open_file_browser({ path = dir, select_buffer = true })
+end, { desc = "[F]ile browser (buffer dir)" })
+
+vim.keymap.set("n", "<leader>e", function()
+	open_file_browser()
+end, { desc = "Open file [E]xplorer" })
+
+vim.keymap.set("n", "-", function()
+	local full_path = vim.api.nvim_buf_get_name(0)
+	local dir = vim.fn.fnamemodify(full_path, ":h")
+	open_file_browser({ path = dir, select_buffer = true })
+end, { desc = "Open parent directory" })

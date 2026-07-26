@@ -4,10 +4,6 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.have_nerd_font = true
 
--- Disable netrw in favor of mini.files
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 vim.o.number = true
 vim.o.mouse = "a"
 vim.o.showmode = false

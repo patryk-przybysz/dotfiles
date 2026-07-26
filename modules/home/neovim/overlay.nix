@@ -17,6 +17,7 @@ let
     telescope-nvim
     telescope-fzf-native-nvim
     telescope-ui-select-nvim
+    telescope-file-browser-nvim
     plenary-nvim
     nvim-web-devicons
     lazydev-nvim
