@@ -39,6 +39,10 @@
     # JS
     nodejs_26
 
+    # pi-web-access (video frame extraction, thumbnails)
+    ffmpeg
+    yt-dlp
+
     # Nix
     nil
     nixfmt
