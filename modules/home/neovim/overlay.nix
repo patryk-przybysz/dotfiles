@@ -42,6 +42,7 @@ let
       p.markdown_inline
       p.nix
       p.query
+      p.rust
       p.typescript
       p.vim
       p.vimdoc
@@ -59,6 +60,7 @@ let
     lua-language-server
     nil
     nixfmt
+    rust-analyzer
     typescript-language-server
     nodejs
     stylua
