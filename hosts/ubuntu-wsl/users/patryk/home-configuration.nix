@@ -8,6 +8,7 @@
 {
   imports = [
     inputs.self.homeModules.neovim
+    inputs.self.homeModules.herdr
   ];
 
   home.stateVersion = "25.05";

@@ -27,6 +27,9 @@
 
     sem.url = "github:Ataraxy-Labs/sem";
     sem.inputs.nixpkgs.follows = "nixpkgs";
+
+    herdr.url = "github:herdrdev/herdr";
+    herdr.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =

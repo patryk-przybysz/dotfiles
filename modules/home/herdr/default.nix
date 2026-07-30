@@ -1,0 +1,24 @@
+{
+  perSystem,
+  ...
+}:
+{
+  home.packages = [
+    perSystem.herdr.herdr
+  ];
+
+  xdg.configFile."herdr/config.toml".text = ''
+    onboarding = false
+
+    [theme]
+    name = "tokyo-night"
+    auto_switch = false
+
+    [ui]
+    show_agent_labels_on_pane_borders = true
+    agent_panel_sort = "spaces"
+
+    [ui.sound]
+    enabled = false
+  '';
+}
