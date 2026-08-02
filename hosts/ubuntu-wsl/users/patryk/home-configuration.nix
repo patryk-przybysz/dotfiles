@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   config,
   inputs,
@@ -61,10 +62,20 @@
   programs = {
     bash = {
       enable = true;
+      enableCompletion = false;
       # Keep bash as login shell (POSIX); exec fish for interactive use.
       # HM .bash_profile sources .profile then .bashrc for login shells.
       # https://nixos.wiki/wiki/Fish#Setting_fish_as_your_shell
-      initExtra = ''
+      profileExtra = ''
+        if [ -n "''${BASH_VERSION:-}" ] && [[ $- == *i* ]] \
+            && [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" ]] \
+            && [ -z "''${BASH_EXECUTION_STRING}" ] \
+            && [ -z "''${IN_NIX_SHELL:-}" ]; then
+          shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+          exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+        fi
+      '';
+      initExtra = lib.mkOrder 50 ''
         if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" \
               && -z ''${BASH_EXECUTION_STRING} \
               && -z ''${IN_NIX_SHELL:-} ]]; then
@@ -96,12 +107,14 @@
     fzf = {
       enable = true;
       enableFishIntegration = true;
+      enableBashIntegration = false;
     };
 
     nix-your-shell.enable = true;
 
     starship = {
       enable = true;
+      enableBashIntegration = false;
       presets = [ "nerd-font-symbols" ];
       settings = {
         nix_shell.heuristic = true;
@@ -110,7 +123,10 @@
 
     bun.enable = true;
     uv.enable = true;
-    zoxide.enable = true;
+    zoxide = {
+      enable = true;
+      enableBashIntegration = false;
+    };
     fd.enable = true;
     bat.enable = true;
     ripgrep.enable = true;
@@ -120,6 +136,7 @@
 
     direnv = {
       enable = true;
+      enableBashIntegration = false;
       nix-direnv.enable = true;
     };
 
