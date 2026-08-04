@@ -1,4 +1,5 @@
 {
+  pkgs,
   perSystem,
   ...
 }:
@@ -20,5 +21,10 @@
 
     [ui.sound]
     enabled = false
+
+    # $SHELL stays bash (POSIX login); herdr panes should open fish directly.
+    [terminal]
+    default_shell = "${pkgs.fish}/bin/fish"
+    shell_mode = "login"
   '';
 }
