@@ -1,30 +1,39 @@
 {
+  config,
+  lib,
   pkgs,
   perSystem,
   ...
 }:
+let
+  cfg = config.my.home.herdr;
+in
 {
-  home.packages = [
-    perSystem.herdr.herdr
-  ];
+  options.my.home.herdr.enable = lib.mkEnableOption "herdr terminal multiplexer";
 
-  xdg.configFile."herdr/config.toml".text = ''
-    onboarding = false
+  config = lib.mkIf cfg.enable {
+    home.packages = [
+      perSystem.herdr.herdr
+    ];
 
-    [theme]
-    name = "tokyo-night"
-    auto_switch = false
+    xdg.configFile."herdr/config.toml".text = ''
+      onboarding = false
 
-    [ui]
-    show_agent_labels_on_pane_borders = true
-    agent_panel_sort = "spaces"
+      [theme]
+      name = "tokyo-night"
+      auto_switch = false
 
-    [ui.sound]
-    enabled = false
+      [ui]
+      show_agent_labels_on_pane_borders = true
+      agent_panel_sort = "spaces"
 
-    # $SHELL stays bash (POSIX login); herdr panes should open fish directly.
-    [terminal]
-    default_shell = "${pkgs.fish}/bin/fish"
-    shell_mode = "login"
-  '';
+      [ui.sound]
+      enabled = false
+
+      # $SHELL stays bash (POSIX login); herdr panes should open fish directly.
+      [terminal]
+      default_shell = "${pkgs.fish}/bin/fish"
+      shell_mode = "login"
+    '';
+  };
 }

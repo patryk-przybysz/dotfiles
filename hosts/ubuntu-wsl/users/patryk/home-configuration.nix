@@ -1,169 +1,42 @@
 {
-  lib,
   pkgs,
-  config,
   inputs,
-  perSystem,
   ...
 }:
 {
-  imports = [
-    inputs.self.homeModules.neovim
-    inputs.self.homeModules.herdr
-  ];
+  imports = builtins.attrValues inputs.self.homeModules;
+
+  my.home = {
+    cli.enable = true;
+    cpp.enable = true;
+    direnv.enable = true;
+    fish.enable = true;
+    fonts.enable = true;
+    gh.enable = true;
+    git.enable = true;
+    herdr.enable = true;
+    js.enable = true;
+    jujutsu.enable = true;
+    neovim.enable = true;
+    nix-tools.enable = true;
+    podman.enable = true;
+    python.enable = true;
+    rust.enable = true;
+    starship.enable = true;
+  };
 
   home.stateVersion = "25.05";
 
-  services.podman = {
-    enable = true;
-    settings.containers.compose_warning_logs = false;
-  };
-
+  # Not yet modularized
   home.packages = with pkgs; [
-    perSystem.sem.default
-    podman-compose
-    docker-language-server
     ormolu
-
     devcontainer
     typst
-    fastfetch
-    rustup
-    devenv
     oci-cli
     terraform
-
-    # C/C++
-    gcc
-    cmake
-    gnumake
-
-    # JS
-    nodejs_26
-
-    # pi-web-access (video frame extraction, thumbnails)
     ffmpeg
     yt-dlp
-
-    # Nix
-    nil
-    nixfmt
-
-    # Fonts
-    nerd-fonts.commit-mono
-    libertine
-    font-awesome
-    corefonts
-    vista-fonts
   ];
-
-  fonts.fontconfig.enable = true;
-
-  programs = {
-    bash = {
-      enable = true;
-      enableCompletion = false;
-      # Keep bash as login shell (POSIX); exec fish for interactive use.
-      # HM .bash_profile sources .profile then .bashrc for login shells.
-      # https://nixos.wiki/wiki/Fish#Setting_fish_as_your_shell
-      profileExtra = ''
-        if [ -n "''${BASH_VERSION:-}" ] && [[ $- == *i* ]] \
-            && [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" ]] \
-            && [ -z "''${BASH_EXECUTION_STRING}" ] \
-            && [ -z "''${IN_NIX_SHELL:-}" ]; then
-          shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
-          exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
-        fi
-      '';
-      initExtra = lib.mkOrder 50 ''
-        if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" \
-              && -z ''${BASH_EXECUTION_STRING} \
-              && -z ''${IN_NIX_SHELL:-} ]]; then
-          shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
-          exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
-        fi
-      '';
-    };
-
-    fish = {
-      enable = true;
-      plugins = with pkgs; [
-        {
-          name = "autopair";
-          src = fishPlugins.autopair.src;
-        }
-        {
-          name = "abbr-tips";
-          src = fetchFromGitHub {
-            owner = "gazorby";
-            repo = "fish-abbreviation-tips";
-            rev = "v0.7.0";
-            hash = "sha256-F1t81VliD+v6WEWqj1c1ehFBXzqLyumx5vV46s/FZRU=";
-          };
-        }
-      ];
-    };
-
-    fzf = {
-      enable = true;
-      enableFishIntegration = true;
-      enableBashIntegration = false;
-    };
-
-    nix-your-shell.enable = true;
-
-    starship = {
-      enable = true;
-      enableBashIntegration = false;
-      presets = [ "nerd-font-symbols" ];
-      settings = {
-        nix_shell.heuristic = true;
-      };
-    };
-
-    bun.enable = true;
-    uv.enable = true;
-    zoxide = {
-      enable = true;
-      enableBashIntegration = false;
-    };
-    fd.enable = true;
-    bat.enable = true;
-    ripgrep.enable = true;
-    htop.enable = true;
-    jq.enable = true;
-    zellij.enable = true;
-
-    direnv = {
-      enable = true;
-      enableBashIntegration = false;
-      nix-direnv.enable = true;
-    };
-
-    git = {
-      enable = true;
-      settings = {
-        init.defaultBranch = "main";
-        user = {
-          name = "Patryk Przybysz";
-          email = "pprzybysz04@outlook.com";
-          github = "patryk-przybysz";
-        };
-      };
-    };
-
-    jujutsu = {
-      enable = true;
-      settings.user = {
-        inherit (config.programs.git.settings.user) name email;
-      };
-    };
-
-    gh = {
-      enable = true;
-      gitCredentialHelper.enable = true;
-    };
-  };
 
   nix = {
     package = pkgs.nix;
