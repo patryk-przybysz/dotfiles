@@ -1,4 +1,13 @@
-{ ... }:
+{
+  pkgs,
+  ...
+}:
+let
+  catppuccinSddm = pkgs.catppuccin-sddm.override {
+    flavor = "mocha";
+    accent = "mauve";
+  };
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -36,8 +45,13 @@
       enable = true;
       xkb.layout = "pl";
     };
-    displayManager.sddm.enable = true;
-    desktopManager.plasma6.enable = true; # kept as fallback session; pick niri at the SDDM session menu
+    displayManager = {
+      defaultSession = "niri";
+      sddm = {
+        enable = true;
+        theme = "${catppuccinSddm}/share/sddm/themes/catppuccin-mocha-mauve";
+      };
+    };
     pipewire = {
       enable = true;
       alsa = {
