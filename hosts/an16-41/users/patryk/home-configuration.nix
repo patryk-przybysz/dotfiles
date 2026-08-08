@@ -15,6 +15,8 @@
     starship.enable = true;
     js.enable = true;
     vesktop.enable = true;
+    niri.enable = true;
+    noctalia.enable = true;
   };
 
   programs.alacritty = {
