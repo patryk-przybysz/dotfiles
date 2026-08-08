@@ -213,6 +213,13 @@ in
           "Print".action.screenshot = { };
           "Shift+Print".action.screenshot-window = { };
           "Ctrl+Print".action.screenshot-screen = { };
+
+          "Mod+V".action.spawn = [
+            "noctalia"
+            "msg"
+            "panel-toggle"
+            "clipboard"
+          ];
         };
     };
   };

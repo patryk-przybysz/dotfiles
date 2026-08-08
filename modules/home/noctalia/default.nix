@@ -41,6 +41,8 @@ in
         shell = {
           time_format = "{:%a, %d %b %H:%M}";
           font_family = "CommitMono Nerd Font";
+          clipboard_enabled = true;
+          clipboard_history_max_entries = 20;
         };
 
         bar.main = {
@@ -60,6 +62,7 @@ in
             "cpu"
             "memory"
             "battery"
+            "clipboard"
             "notifications"
             "session"
           ];
