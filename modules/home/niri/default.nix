@@ -129,7 +129,13 @@ in
       prefer-no-csd = true;
 
       input = {
-        keyboard.xkb.layout = "pl";
+        keyboard = {
+          xkb.layout = "pl";
+          # Windows: ~180 ms before repeat, speed slider at 1 (fastest ≈ 31 chars/s).
+          # niri caps repeat-rate at 255 (u8); "1 ms" interval (1000/s) is not supported.
+          repeat-delay = 180;
+          repeat-rate = 31;
+        };
         mouse = {
           accel-profile = "flat";
           accel-speed = 0.0;
