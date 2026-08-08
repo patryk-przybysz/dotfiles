@@ -6,7 +6,10 @@ inputs.git-hooks.lib.${pkgs.stdenv.hostPlatform.system}.run {
   src = inputs.self;
   hooks = {
     nil.enable = true;
-    statix.enable = true;
+    statix = {
+      enable = true;
+      excludes = [ "hardware-configuration\\.nix$" ];
+    };
     treefmt = {
       enable = true;
       package = treefmtEval.config.build.wrapper;
