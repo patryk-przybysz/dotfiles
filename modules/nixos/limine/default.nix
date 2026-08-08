@@ -33,6 +33,11 @@ in
       enableEditor = false;
       inherit (cfg) maxGenerations;
       extraConfig = builtins.readFile "${tokyoNightLimine}/tokyo-night.conf";
+      extraEntries = ''
+        /Windows Boot Manager
+          protocol: efi
+          path: boot():/EFI/Microsoft/Boot/bootmgfw.efi
+      '';
       style.wallpapers = [ ];
     };
   };
