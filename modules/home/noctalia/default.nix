@@ -73,10 +73,15 @@ in
           ];
           end = [
             "mic"
+            "sysmon_gap"
             "volume"
+            "sysmon_gap"
             "cpu"
+            "sysmon_gap"
             "memory"
+            "sysmon_gap"
             "battery"
+            "actions_group_gap"
             "clipboard"
             "notifications"
             "session"
@@ -90,6 +95,14 @@ in
           clock_weather_gap = {
             type = "spacer";
             length = 20;
+          };
+          sysmon_gap = {
+            type = "spacer";
+            length = 10;
+          };
+          actions_group_gap = {
+            type = "spacer";
+            length = 16;
           };
           mic = {
             type = "volume";

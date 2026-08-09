@@ -104,7 +104,7 @@ in
             end
 
             set -lx NIXOS_LABEL $argv[1]
-            set -argv $argv[2..-1]
+            set argv $argv[2..-1]
 
             set -l rev (${pkgs.git}/bin/git -C ${lib.escapeShellArg cfg.generationLabels.flakePath} rev-parse --short HEAD 2>/dev/null)
             if test -n "$rev"

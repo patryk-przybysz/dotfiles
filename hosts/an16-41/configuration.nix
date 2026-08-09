@@ -76,6 +76,7 @@ in
   };
 
   services = {
+    upower.enable = true;
     xserver = {
       enable = true;
       xkb.layout = "pl";
