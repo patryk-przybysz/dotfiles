@@ -48,7 +48,7 @@ in
         };
 
         shell = {
-          time_format = "{:%a, %d %b %H:%M}";
+          time_format = "{:%a, %d %b %Y %H:%M}";
           font_family = "CommitMono Nerd Font";
           clipboard_enabled = true;
           clipboard_history_max_entries = 20;
@@ -60,6 +60,7 @@ in
           margin_ends = 10;
           radius = 12;
           shadow = true;
+          scale = 0.92;
 
           start = [
             "workspaces"
@@ -67,6 +68,7 @@ in
           ];
           center = [
             "clock"
+            "clock_weather_gap"
             "weather"
           ];
           end = [
@@ -82,6 +84,13 @@ in
         };
 
         widget = {
+          clock = {
+            format = "{:%a, %d %b %Y %H:%M}";
+          };
+          clock_weather_gap = {
+            type = "spacer";
+            length = 20;
+          };
           mic = {
             type = "volume";
             device = "input";
