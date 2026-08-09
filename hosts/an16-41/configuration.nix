@@ -1,4 +1,5 @@
 {
+  inputs,
   pkgs,
   ...
 }:
@@ -9,12 +10,31 @@ let
   };
 in
 {
-  imports = [
-    ./hardware-configuration.nix
-    ../../modules/nixos/limine
-  ];
+  imports = [ ./hardware-configuration.nix ] ++ builtins.attrValues inputs.self.nixosModules;
 
-  my.nixos.limine.enable = true;
+  my.nixos = {
+    limine.enable = true;
+    gaming.enable = true;
+    nvidia.enable = true;
+  };
+
+  # Shared Windows games library. lowntfs-3g + ignore_case over ntfs3
+  # (kernel 6.18 ntfs3 breaks Proton gamedrive prefixes); nofail so a
+  # hibernation-locked drive can't block boot.
+  fileSystems."/media/games" = {
+    device = "/dev/disk/by-uuid/D0C0A2DCC0A2C854";
+    fsType = "lowntfs-3g";
+    options = [
+      "uid=1000"
+      "gid=100"
+      "nofail"
+      "windows_names"
+      "rw"
+      "exec"
+      "umask=000"
+      "ignore_case"
+    ];
+  };
 
   boot.loader.efi.canTouchEfiVariables = true;
 
