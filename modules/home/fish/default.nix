@@ -37,6 +37,7 @@ in
 
       fish = {
         enable = true;
+        interactiveShellInit = "set -g fish_greeting";
         plugins = with pkgs; [
           {
             name = "autopair";
