@@ -6,17 +6,10 @@
 }:
 let
   cfg = config.my.nixos.limine;
-
-  tokyoNightLimine = pkgs.fetchFromGitHub {
-    owner = "Bukutsu";
-    repo = "tokyo-night-limine";
-    rev = "a2e9b61b2b1b815bf0173bf5f910c9c213014b33";
-    hash = "sha256-gVr5ukL+HeOxwTNT6kmGbVCDuJ94+mI8qbH2LnC/5Ms=";
-  };
 in
 {
   options.my.nixos.limine = {
-    enable = lib.mkEnableOption "Limine bootloader with Tokyo Night theme";
+    enable = lib.mkEnableOption "Limine bootloader (plain black menu)";
 
     maxGenerations = lib.mkOption {
       type = lib.types.int;
@@ -32,13 +25,27 @@ in
       enable = true;
       enableEditor = false;
       inherit (cfg) maxGenerations;
-      extraConfig = builtins.readFile "${tokyoNightLimine}/tokyo-night.conf";
       extraEntries = ''
         /Windows Boot Manager
           protocol: efi
           path: boot():/EFI/Microsoft/Boot/bootmgfw.efi
       '';
-      style.wallpapers = [ ];
+      style = {
+        wallpapers = [ ];
+        backdrop = "000000";
+        interface = {
+          helpHidden = true;
+          brandingColor = "666666";
+          helpColor = "444444";
+          helpColorBright = "888888";
+        };
+        graphicalTerminal = {
+          background = "ff000000";
+          foreground = "cccccc";
+          brightForeground = "ffffff";
+          brightBackground = "333333";
+        };
+      };
     };
   };
 }
