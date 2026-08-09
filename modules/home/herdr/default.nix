@@ -2,18 +2,19 @@
   config,
   lib,
   pkgs,
-  perSystem,
   ...
 }:
 let
   cfg = config.my.home.herdr;
+
+  defaultShell = if config.programs.fish.enable then "${pkgs.fish}/bin/fish" else null;
 in
 {
   options.my.home.herdr.enable = lib.mkEnableOption "herdr terminal multiplexer";
 
   config = lib.mkIf cfg.enable {
     home.packages = [
-      perSystem.herdr.herdr
+      pkgs.herdr
     ];
 
     xdg.configFile."herdr/config.toml".text = ''
@@ -29,10 +30,11 @@ in
 
       [ui.sound]
       enabled = false
-
-      # $SHELL stays bash (POSIX login); herdr panes should open fish directly.
+    ''
+    + lib.optionalString (defaultShell != null) ''
+      # $SHELL stays bash (POSIX login); herdr panes use the enabled HM shell.
       [terminal]
-      default_shell = "${pkgs.fish}/bin/fish"
+      default_shell = "${defaultShell}"
       shell_mode = "login"
     '';
   };

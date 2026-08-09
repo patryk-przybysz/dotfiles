@@ -106,6 +106,11 @@ in
      MOUSE_DPI=2000@125
   '';
 
+  # hub.rapoo.com uses WebHID; hidraw nodes are root-only by default on Linux.
+  services.udev.extraRules = ''
+    SUBSYSTEM=="hidraw", ATTRS{idVendor}=="24ae", TAG+="uaccess"
+  '';
+
   console.keyMap = "pl2";
 
   security.rtkit.enable = true;

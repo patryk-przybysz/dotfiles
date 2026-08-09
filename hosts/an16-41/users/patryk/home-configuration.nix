@@ -9,6 +9,7 @@
     fonts.enable = true;
     gh.enable = true;
     git.enable = true;
+    herdr.enable = true;
     jujutsu.enable = true;
     neovim.enable = true;
     nix-tools = {
