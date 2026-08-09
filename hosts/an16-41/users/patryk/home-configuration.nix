@@ -15,6 +15,7 @@
     nix-tools = {
       enable = true;
       osHost = "an16-41";
+      generationLabels.enable = true;
     };
     starship.enable = true;
     gaming.enable = true;

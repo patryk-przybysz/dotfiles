@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  config,
   ...
 }:
 let
@@ -53,6 +54,9 @@ in
     hostName = "an16-41";
     networkmanager.enable = true;
   };
+
+  # Prefixes each generation label in the Limine boot menu (system.nixos.label).
+  system.nixos.tags = [ config.networking.hostName ];
 
   time.timeZone = "Europe/Warsaw";
 
