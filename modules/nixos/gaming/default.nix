@@ -25,11 +25,11 @@ in
       "/home/patryk/.steam/root/compatibilitytools.d"
     ];
 
+    # NOTE: ntfs3g must not be installed here — its mount.ntfs helper shadows
+    # the in-kernel ntfs driver (kernel 7.1+) for `ntfs` fstab entries.
     environment.systemPackages = with pkgs; [
       mangohud
       protonup-ng
-      # ntfs-3g provides the lowntfs-3g mount helper for the Windows games drive
-      ntfs3g
     ];
   };
 }

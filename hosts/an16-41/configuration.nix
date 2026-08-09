@@ -18,21 +18,32 @@ in
     nvidia.enable = true;
   };
 
-  # Shared Windows games library. lowntfs-3g + ignore_case over ntfs3
-  # (kernel 6.18 ntfs3 breaks Proton gamedrive prefixes); nofail so a
-  # hibernation-locked drive can't block boot.
+  # Kernel 7.1 for the new in-kernel ntfs driver used below
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  # Shared Windows games library on the new in-kernel ntfs driver (7.1+).
+  # nofail so a hibernation-locked drive can't block boot.
   fileSystems."/media/games" = {
     device = "/dev/disk/by-uuid/D0C0A2DCC0A2C854";
-    fsType = "lowntfs-3g";
+    fsType = "ntfs";
     options = [
       "uid=1000"
       "gid=100"
       "nofail"
-      "windows_names"
       "rw"
       "exec"
       "umask=000"
-      "ignore_case"
+    ];
+  };
+
+  # Proton prefixes must stay on a Linux fs. The in-kernel ntfs driver
+  # doesn't expose NTFS symlinks as symlinks, so bind-mount instead.
+  fileSystems."/media/games/SteamLibrary/steamapps/compatdata" = {
+    device = "/home/patryk/.steam/steam/steamapps/compatdata-games";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
     ];
   };
 
