@@ -7,6 +7,8 @@
 }:
 let
   cfg = config.my.home.noctalia;
+  wallpaperDir = "${config.home.homeDirectory}/Pictures/Wallpapers";
+  wallpaperFile = "${wallpaperDir}/sylas.jpg";
 in
 {
   imports = [ inputs.noctalia.homeModules.default ];
@@ -29,6 +31,13 @@ in
           mode = "dark";
           source = "builtin";
           builtin = "Catppuccin";
+        };
+
+        wallpaper = {
+          enabled = true;
+          fill_mode = "crop";
+          directory = wallpaperDir;
+          default.path = wallpaperFile;
         };
 
         location.address = "Gdansk, Poland";
