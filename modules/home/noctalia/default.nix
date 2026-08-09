@@ -56,6 +56,10 @@ in
 
         bar.main = {
           position = "top";
+          margin_edge = 8;
+          margin_ends = 10;
+          radius = 12;
+          shadow = true;
 
           start = [
             "workspaces"

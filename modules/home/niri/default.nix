@@ -70,7 +70,7 @@ let
     ];
     "X".spawn = [ "alacritty" ];
     "B".spawn = [ "microsoft-edge" ];
-    "E".spawn = [ "dolphin" ];
+    "E".spawn = [ "thunar" ];
 
     # Workspaces
     "S".focus-workspace-down = { };

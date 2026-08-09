@@ -64,6 +64,8 @@ in
 
   programs.niri.enable = true;
 
+  home-manager.backupFileExtension = "hm-bak";
+
   # Compx 2.4G wireless mouse: libinput can't detect its real DPI and assumes
   # 800, making everything ~2.5x too fast at the hardware's 2000 DPI.
   services.udev.extraHwdb = ''

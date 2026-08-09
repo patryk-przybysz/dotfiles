@@ -11,12 +11,16 @@
     git.enable = true;
     jujutsu.enable = true;
     neovim.enable = true;
-    nix-tools.enable = true;
+    nix-tools = {
+      enable = true;
+      osHost = "an16-41";
+    };
     starship.enable = true;
     js.enable = true;
     vesktop.enable = true;
     niri.enable = true;
     noctalia.enable = true;
+    thunar.enable = true;
   };
 
   programs.alacritty = {
