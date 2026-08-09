@@ -219,6 +219,7 @@ in
           "Print".action.screenshot = { };
           "Shift+Print".action.screenshot-window = { };
           "Ctrl+Print".action.screenshot-screen = { };
+          "Mod+Shift+S".action.screenshot = { };
 
           "Mod+V".action.spawn = [
             "noctalia"
