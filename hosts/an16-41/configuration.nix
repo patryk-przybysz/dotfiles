@@ -120,6 +120,11 @@ in
 
   security.rtkit.enable = true;
 
+  environment.systemPackages = with pkgs; [
+    obs-studio
+    obs-studio-plugins.obs-pipewire-audio-capture
+  ];
+
   users.users.patryk = {
     isNormalUser = true;
     description = "Patryk Przybysz";
