@@ -19,6 +19,7 @@
     };
     starship.enable = true;
     gaming.enable = true;
+    mcsr.enable = true;
     js.enable = true;
     vesktop.enable = true;
     niri.enable = true;
