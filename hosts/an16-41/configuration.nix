@@ -120,10 +120,16 @@ in
 
   security.rtkit.enable = true;
 
-  environment.systemPackages = with pkgs; [
-    obs-studio
-    obs-studio-plugins.obs-pipewire-audio-capture
-  ];
+  # https://wiki.nixos.org/wiki/OBS_Studio — cudaSupport adds NVENC driver runpaths
+  programs.obs-studio = {
+    enable = true;
+    package = pkgs.obs-studio.override {
+      cudaSupport = true;
+    };
+    plugins = with pkgs.obs-studio-plugins; [
+      obs-pipewire-audio-capture
+    ];
+  };
 
   users.users.patryk = {
     isNormalUser = true;
