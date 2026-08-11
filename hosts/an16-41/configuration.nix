@@ -17,6 +17,15 @@ in
     limine.enable = true;
     gaming.enable = true;
     nvidia.enable = true;
+    # Dedicated RAM disk for RSG worlds — not boot.tmp.useTmpfs (/tmp).
+    # https://its-saanvi.github.io/linux-mcsr/tmpfs.html
+    # Pattern: https://github.com/flammablebunny/flake (hosts/pc tmpfs + cleanup)
+    mcsr.tmpfs = {
+      enable = true;
+      size = "4G";
+      keepWorlds = 1000;
+      instances.RSG.savesPath = "/home/patryk/.local/share/PrismLauncher/instances/1.16.1 RSG/minecraft/saves";
+    };
   };
 
   # Kernel 7.1 for the new in-kernel ntfs driver used below
