@@ -20,6 +20,7 @@
     starship.enable = true;
     gaming.enable = true;
     mcsr.enable = true;
+    mpv.enable = true;
     js.enable = true;
     vesktop.enable = true;
     niri.enable = true;
