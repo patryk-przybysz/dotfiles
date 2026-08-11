@@ -92,6 +92,10 @@ return {
 		color = "#FFFFFF",
 	},
 
+	-- Mode hotkeys only when in-world and unpaused (not inventory, pause menu, title, etc.).
+	-- Requires State Output in the instance.
+	ingame_only_modes = true,
+
 	-- ==== MACROS ====
 	-- https://tesselslate.github.io/waywall/03_lookup_tables.html#modifiers
 	keys = {

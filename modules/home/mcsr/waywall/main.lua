@@ -268,13 +268,20 @@ return function(cfg, remaps)
 		end,
 	})
 
-	-- Always start in normal resolution; MC/waywall can restore thin/wide/tall from last session.
+	local function reset_to_fullscreen()
+		if ModeManager.active then
+			ModeManager:_transition_to(nil)
+		else
+			waywall.set_resolution(0, 0)
+			scene:enable_group("thin", false)
+			scene:enable_group("eyezoom", false)
+			scene:enable_group("preemptive", false)
+			reset_sens()
+		end
+	end
+
 	waywall.listen("load", function()
-		waywall.set_resolution(0, 0)
-		scene:enable_group("thin", false)
-		scene:enable_group("eyezoom", false)
-		scene:enable_group("preemptive", false)
-		reset_sens()
+		reset_to_fullscreen()
 
 		-- Wait for title screen before launching NinB.
 		repeat
@@ -283,6 +290,17 @@ return function(cfg, remaps)
 		until ok and state.screen == "title"
 
 		ensure_ninjabrain()
+	end)
+
+	-- Reset mode when leaving a world (world reset, quit to title, new world gen, etc.).
+	waywall.listen("state", function()
+		local ok, state = pcall(waywall.state)
+		if not ok then
+			return
+		end
+		if state.screen ~= "inworld" then
+			reset_to_fullscreen()
+		end
 	end)
 
 	config.actions = Keys.actions({

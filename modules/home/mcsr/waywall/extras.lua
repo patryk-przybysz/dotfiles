@@ -1,6 +1,7 @@
 return function(config, ctx)
 	local cfg = ctx.cfg
 	local waywall = ctx.waywall
+	local helpers = ctx.helpers
 	local keyboard_remaps = ctx.remaps.remapped_kb or {}
 	local other_remaps = ctx.remaps.normal_kb or {}
 	local xkb = cfg.xkb
@@ -44,7 +45,11 @@ return function(config, ctx)
 	}) do
 		local action = config.actions[key]
 		if action then
-			config.actions[key] = wrap_mode_action(action)
+			action = wrap_mode_action(action)
+			if cfg.ingame_only_modes then
+				action = helpers.ingame_only(action)
+			end
+			config.actions[key] = action
 		end
 	end
 
