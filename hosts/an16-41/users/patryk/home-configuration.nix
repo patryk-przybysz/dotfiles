@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 {
   imports = builtins.attrValues inputs.self.homeModules;
 
@@ -34,6 +34,12 @@
     };
   };
 
+  home = {
+    packages = [ pkgs.spotify ];
+    stateVersion = "26.05";
+    language.base = "en_US.UTF-8";
+  };
+
   programs.microsoft-edge = {
     enable = true;
     extensions = [
@@ -42,7 +48,4 @@
       "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock
     ];
   };
-
-  home.stateVersion = "26.05";
-  home.language.base = "en_US.UTF-8";
 }
