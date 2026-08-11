@@ -116,6 +116,14 @@ in
     SUBSYSTEM=="hidraw", ATTRS{idVendor}=="24ae", TAG+="uaccess"
   '';
 
+  # https://its-saanvi.github.io/linux-mcsr/drag-clicking.html
+  # libinput debounces fast successive clicks by default; drag clicking needs that off.
+  environment.etc."libinput/local-overrides.quirks".text = ''
+    [Never Debounce]
+    MatchUdevType=mouse
+    ModelBouncingKeys=1
+  '';
+
   console.keyMap = "pl2";
 
   security.rtkit.enable = true;
