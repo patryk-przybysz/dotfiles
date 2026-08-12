@@ -182,9 +182,9 @@ local mapless = cfg.mapless or { enabled = false }
 local glowdar = cfg.glowdar or { enabled = false }
 
 -- Several strips → one dst so the glyph stays put when pie rows reorder.
-local function register_stable_strips(name_prefix, src, dst, groups, keys)
-	local rows = src.rows or 4
-	local step = src.row_step or 8
+local function register_stable_strips(name_prefix, src, dst, groups, keys, rows, step)
+	rows = rows or 4
+	step = step or 8
 	for i = 0, rows - 1 do
 		register_keyed(name_prefix .. "_" .. i, {
 			x = src.x,
@@ -198,22 +198,6 @@ end
 if pct.enabled then
 	local rows = pct.rows or 4
 	local step = pct.row_step or 8
-	local thin_src = {
-		x = pct.thin_src.x,
-		y = pct.thin_src.y,
-		w = pct.thin_src.w,
-		h = pct.thin_src.h,
-		rows = rows,
-		row_step = step,
-	}
-	local tall_src = {
-		x = pct.tall_src.x,
-		y = pct.tall_src.y,
-		w = pct.tall_src.w,
-		h = pct.tall_src.h,
-		rows = rows,
-		row_step = step,
-	}
 	local be_keys = {
 		{
 			input = "#E96D4D",
@@ -226,10 +210,10 @@ if pct.enabled then
 			output = pct.match_text and cfg.text_col or cfg.pie_chart_2,
 		},
 	}
-	register_stable_strips("thin_percent_be", thin_src, pct.blockentities, { "thin" }, be_keys)
-	register_stable_strips("thin_percent_un", thin_src, pct.unspecified, { "thin" }, un_keys)
-	register_stable_strips("tall_percent_be", tall_src, pct.blockentities, { "preemptive" }, be_keys)
-	register_stable_strips("tall_percent_un", tall_src, pct.unspecified, { "preemptive" }, un_keys)
+	register_stable_strips("thin_percent_be", pct.thin_src, pct.blockentities, { "thin" }, be_keys, rows, step)
+	register_stable_strips("thin_percent_un", pct.thin_src, pct.unspecified, { "thin" }, un_keys, rows, step)
+	register_stable_strips("tall_percent_be", pct.tall_src, pct.blockentities, { "preemptive" }, be_keys, rows, step)
+	register_stable_strips("tall_percent_un", pct.tall_src, pct.unspecified, { "preemptive" }, un_keys, rows, step)
 end
 
 if mapless.enabled then
@@ -241,37 +225,13 @@ if mapless.enabled then
 			output = mapless.output or cfg.text_col or "#FFFFFF",
 		},
 	}
-	local thin_src = {
-		x = mapless.thin.src.x,
-		y = mapless.thin.src.y,
-		w = mapless.thin.src.w,
-		h = mapless.thin.src.h,
-		rows = rows,
-		row_step = step,
-	}
-	local normal_src = {
-		x = mapless.normal.src.x,
-		y = mapless.normal.src.y,
-		w = mapless.normal.src.w,
-		h = mapless.normal.src.h,
-		rows = rows,
-		row_step = step,
-	}
-	register_stable_strips("thin_mapless", thin_src, mapless.thin.dst, { "thin" }, keys)
-	register_stable_strips("normal_mapless", normal_src, mapless.normal.dst, { "normal" }, keys)
+	register_stable_strips("thin_mapless", mapless.thin.src, mapless.thin.dst, { "thin" }, keys, rows, step)
+	register_stable_strips("normal_mapless", mapless.normal.src, mapless.normal.dst, { "normal" }, keys, rows, step)
 end
 
 if glowdar.enabled then
 	local rows = glowdar.rows or 4
 	local step = glowdar.row_step or 8
-	local src = {
-		x = glowdar.src.x,
-		y = glowdar.src.y,
-		w = glowdar.src.w,
-		h = glowdar.src.h,
-		rows = rows,
-		row_step = step,
-	}
 	local keys = nil
 	if glowdar.colorkey ~= false then
 		keys = {}
@@ -279,7 +239,7 @@ if glowdar.enabled then
 			keys[#keys + 1] = { input = input, output = glowdar.output or "#FFFFFF" }
 		end
 	end
-	register_stable_strips("glowdar", src, glowdar.dst, { "normal" }, keys)
+	register_stable_strips("glowdar", glowdar.src, glowdar.dst, { "normal" }, keys, rows, step)
 end
 
 local measure_w, measure_h = cfg.measuring.dst_w, cfg.measuring.dst_h
