@@ -5,7 +5,7 @@ return {
 	bg_col = "#000000ff",
 	text_col = "#FFFFFF",
 	pie_chart_1 = "#EC6E4E", -- orange (block entities)
-	pie_chart_2 = "#46CE66", -- green
+	pie_chart_2 = "#46CE66", -- green (unspecified)
 	pie_chart_3 = "#E446C4", -- purple (entities)
 	pie_chart_1_dark = "#763727",
 	pie_chart_2_dark = "#236733",
@@ -20,14 +20,13 @@ return {
 	},
 
 	-- ==== ALTERNATIVE RESOLUTIONS ====
-	-- Thin = Toolscreen max(330, screenWidth/8) @ 2560; height ≈ 0.95*1600.
 	thin_res = { 330, 1520 },
 	wide_res = { 2508, 400 },
 	tall_res = { 384, 16384 },
 
 	-- ==== MIRRORS ====
 	-- All src/dst are absolute top-left rectangles.
-	-- src = game framebuffer; dst = monitor. Stable strips: y + i*row_step.
+	-- src = game framebuffer; dst = monitor.
 
 	e_count = {
 		enabled = true,
@@ -41,7 +40,6 @@ return {
 		show_c = true,
 	},
 
-	-- Preemptive pie over thin's native pie (320×170).
 	tall_pie = {
 		enabled = true,
 		colorkey = true,
@@ -49,8 +47,6 @@ return {
 		dst = { x = 1114, y = 1159, w = 320, h = 170 },
 	},
 
-	-- Left pie % (BE orange + unspecified green). Thin + preemptive.
-	-- thin/tall src = pieLeft until you remeasure; dst absolute.
 	percent = {
 		enabled = true,
 		match_text = false,
@@ -62,7 +58,6 @@ return {
 		unspecified = { x = 1166, y = 1244, w = 60, h = 35 },
 	},
 
-	-- Mapless: right column → white. Fullscreen + thin.
 	mapless = {
 		enabled = true,
 		rows = 4,
@@ -78,14 +73,13 @@ return {
 		},
 	},
 
-	-- Glowdar: cyan left column. Fullscreen only; shares mapless.normal.dst.
 	glowdar = {
 		enabled = true,
 		colorkey = true,
 		rows = 4,
 		row_step = 8,
 		input_colors = { "#4DE1CA", "#4EE4CC" },
-		output = "#4DE1CA", -- cyan/blue (not white)
+		output = "#4DE1CA",
 		src = { x = 2468, y = 1380, w = 25, h = 7 },
 		dst = { x = 2395, y = 1290, w = 125, h = 35 },
 	},

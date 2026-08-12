@@ -262,7 +262,6 @@ return function(cfg, remaps)
 			rows = rows,
 			row_step = step,
 		}
-		local dst = glowdar.dst or mapless.normal.dst
 		local keys = nil
 		if glowdar.colorkey ~= false then
 			keys = {}
@@ -270,7 +269,7 @@ return function(cfg, remaps)
 				keys[#keys + 1] = { input = input, output = glowdar.output or "#FFFFFF" }
 			end
 		end
-		register_stable_strips("glowdar", src, dst, { "normal" }, keys)
+		register_stable_strips("glowdar", src, glowdar.dst, { "normal" }, keys)
 	end
 
 	local measure_w, measure_h = cfg.measuring.dst_w, cfg.measuring.dst_h
