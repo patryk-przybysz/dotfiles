@@ -130,8 +130,7 @@ return function(cfg, remaps)
 			w = e_w * ec_size,
 			h = F3_LINE_H * ec_size,
 		}
-		register_keyed("e_counter", ec_src, ec_dst, { "thin" }, ec_keys, 2, true)
-		register_keyed("tall_e_counter", ec_src, ec_dst, { "eyezoom", "preemptive" }, ec_keys, 2, true)
+		register_keyed("e_counter", ec_src, ec_dst, { "thin", "eyezoom", "preemptive" }, ec_keys, 2, true)
 	end
 
 	if ec.show_c then
@@ -143,8 +142,7 @@ return function(cfg, remaps)
 			w = c_w * ec_size,
 			h = F3_LINE_H * ec_size,
 		}
-		register_keyed("c_counter", cc_src, cc_dst, { "thin" }, ec_keys, 2, true)
-		register_keyed("tall_c_counter", cc_src, cc_dst, { "eyezoom", "preemptive" }, ec_keys, 2, true)
+		register_keyed("c_counter", cc_src, cc_dst, { "thin", "eyezoom", "preemptive" }, ec_keys, 2, true)
 	end
 
 	-- Tall pie / number mirrors: absolute src+dst from settings.lua.
