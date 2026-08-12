@@ -1,56 +1,11 @@
-Deferred: pie number mirrors (%, mapless, glowdar)
-====================================================
+Pie number mirrors (%, mapless, glowdar)
+========================================
 
-Removed for now — re-add under tall_pie / top-level in settings.lua and wire in
-main.lua when revisiting. register_keyed(..., use_border=true) already exists
-for E/C and can be reused.
+Absolute src/dst only in settings.lua. Stable strips: rows @ src.y + i*row_step.
 
-References
-----------
-- Toolscreen: /mnt/windows/Users/pprzy/.config/toolscreen/config.toml
-  (Mapless, Glowdar, blockentities left, unspecified left)
-- Generic: thin_percent / tall_percent in arjuncgore/waywall_generic_config
-- Esensats: thin_percent_left/right, tall_percent_left/right
-- thenml: pie_percent + glowdar (shaders) in options.default.lua
+tall_pie           preemptive          src/dst absolute (covers thin native pie)
+percent            thin + preemptive   thin_src / tall_src + blockentities / unspecified dst
+mapless            fullscreen + thin   normal / thin { src, dst }
+glowdar            fullscreen only     src + dst (same spot as mapless.normal.dst)
 
-percent (LEFT)
---------------
-blockentities % (#E96D4D → orange) + unspecified (#45CB65 → green).
-
-- Modes: thin + preemptive
-- Placement: center in tall_pie dst (follow_pie) or absolute x/y
-- Tall src ≈ {291, 16163, 33, 25}
-- Thin src ≈ {thin_w-93, thin_h-221, 33, 25}
-- Colorkey pie drops % text — must re-mirror on top (depth 3)
-- match_text = false for type colors (orange/green, not white)
-
-mapless (RIGHT)
----------------
-Last/right blockentities % on the F3 pie
-(root.gameRenderer.level.entities).
-
-- Same orange #E96D4D as left, but pieRight crop (not left)
-- Modes: normal + thin
-- MC only draws it when the wedge is large (often ~>50%) — empty mirror is OK
-- Toolscreen dst: bottomRightViewport x=44, y=266
-  (≈ absolute 2421, 1299 @ size 5, capture 19×7)
-- Do NOT center on tall_pie — fullscreen native pie is bottom-right
-- Thin src ≈ {thin_w-55, thin_h-221, 19, 7}
-- Normal src needs in-game nudge when the right % is visible in F3
-
-glowdar
--------
-Cyan mob-spawner / glow text.
-
-- Modes: normal only
-- Same on-screen dst as mapless (colorkey keeps colors from fighting)
-- Capture #4EE4CC → display #4EE4CC (also key Toolscreen #4DE1CA)
-- pieLeft / percent zone
-- thenml src ≈ bottomright -60, -196 → {2468, 1380, 32, 24} @ 2560×1600
-
-Borders / scene
----------------
-- number_border already fakes Toolscreen Dynamic outline via ±px offset mirrors
-  (kept for E/C; reuse for these later)
-- Use a "normal" scene group + sync when ModeManager.active == nil for
-  fullscreen-only mirrors (mapless normal + glowdar)
+Tune: edit x/y/w/h in settings.lua → nh home switch → relaunch MC.

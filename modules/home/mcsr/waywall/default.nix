@@ -24,8 +24,9 @@ in
     home.packages = [ ninjabrain-bot ];
 
     # Multi-file config: mcsr-nixos only ships init.lua (finalFile); siblings go here.
-    # Store copies — waywall hot-reload SIGSEGVs in config_vm_resume on this setup.
-    # Edit → nh home switch → relaunch Minecraft.
+    # Store copies on purpose. DO NOT hot-reload by editing/cp into ~/.config/waywall
+    # while Minecraft is running — waywall SIGSEGVs in config_vm_resume and MC dies
+    # with exit 111 (ECONNREFUSED / compositor gone). Edit → nh home switch → relaunch.
     # Layout inspired by https://github.com/arjuncgore/waywall_generic_config
     home.file = {
       ".config/xkb/symbols/mc".source = ./xkb/mc;

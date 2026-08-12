@@ -147,11 +147,11 @@ return function(cfg, remaps)
 		register_keyed("tall_c_counter", cc_src, cc_dst, { "eyezoom", "preemptive" }, ec_keys, 2, true)
 	end
 
-	-- Tall pie: dst matches thin's native pie for seamless switch.
+	-- Tall pie / number mirrors: absolute src+dst from settings.lua.
 	local pie = cfg.tall_pie
 	if pie.enabled then
-		local pie_src = pie.src or { x = 44, y = 15978, w = 340, h = 170 }
-		local pie_dst = { x = pie.x, y = pie.y, w = pie.w, h = pie.h }
+		local pie_src = pie.src
+		local pie_dst = pie.dst
 		if pie.colorkey then
 			for i, ck in ipairs(pie_colors) do
 				scene:register("tall_pie_" .. i, {
@@ -167,6 +167,112 @@ return function(cfg, remaps)
 				groups = { "preemptive" },
 			})
 		end
+	end
+
+	local pct = cfg.percent or { enabled = false }
+	local mapless = cfg.mapless or { enabled = false }
+	local glowdar = cfg.glowdar or { enabled = false }
+
+	-- Several strips → one dst so the glyph stays put when pie rows reorder.
+	local function register_stable_strips(name_prefix, src, dst, groups, keys)
+		local rows = src.rows or 4
+		local step = src.row_step or 8
+		for i = 0, rows - 1 do
+			register_keyed(name_prefix .. "_" .. i, {
+				x = src.x,
+				y = src.y + step * i,
+				w = src.w,
+				h = src.h,
+			}, dst, groups, keys, 3, true)
+		end
+	end
+
+	if pct.enabled then
+		local rows = pct.rows or 4
+		local step = pct.row_step or 8
+		local thin_src = {
+			x = pct.thin_src.x,
+			y = pct.thin_src.y,
+			w = pct.thin_src.w,
+			h = pct.thin_src.h,
+			rows = rows,
+			row_step = step,
+		}
+		local tall_src = {
+			x = pct.tall_src.x,
+			y = pct.tall_src.y,
+			w = pct.tall_src.w,
+			h = pct.tall_src.h,
+			rows = rows,
+			row_step = step,
+		}
+		local be_keys = {
+			{
+				input = "#E96D4D",
+				output = pct.match_text and cfg.text_col or cfg.pie_chart_1,
+			},
+		}
+		local un_keys = {
+			{
+				input = "#45CB65",
+				output = pct.match_text and cfg.text_col or cfg.pie_chart_2,
+			},
+		}
+		register_stable_strips("thin_percent_be", thin_src, pct.blockentities, { "thin" }, be_keys)
+		register_stable_strips("thin_percent_un", thin_src, pct.unspecified, { "thin" }, un_keys)
+		register_stable_strips("tall_percent_be", tall_src, pct.blockentities, { "preemptive" }, be_keys)
+		register_stable_strips("tall_percent_un", tall_src, pct.unspecified, { "preemptive" }, un_keys)
+	end
+
+	if mapless.enabled then
+		local rows = mapless.rows or 4
+		local step = mapless.row_step or 8
+		local keys = {
+			{
+				input = "#E96D4D",
+				output = mapless.output or cfg.text_col or "#FFFFFF",
+			},
+		}
+		local thin_src = {
+			x = mapless.thin.src.x,
+			y = mapless.thin.src.y,
+			w = mapless.thin.src.w,
+			h = mapless.thin.src.h,
+			rows = rows,
+			row_step = step,
+		}
+		local normal_src = {
+			x = mapless.normal.src.x,
+			y = mapless.normal.src.y,
+			w = mapless.normal.src.w,
+			h = mapless.normal.src.h,
+			rows = rows,
+			row_step = step,
+		}
+		register_stable_strips("thin_mapless", thin_src, mapless.thin.dst, { "thin" }, keys)
+		register_stable_strips("normal_mapless", normal_src, mapless.normal.dst, { "normal" }, keys)
+	end
+
+	if glowdar.enabled then
+		local rows = glowdar.rows or 4
+		local step = glowdar.row_step or 8
+		local src = {
+			x = glowdar.src.x,
+			y = glowdar.src.y,
+			w = glowdar.src.w,
+			h = glowdar.src.h,
+			rows = rows,
+			row_step = step,
+		}
+		local dst = glowdar.dst or mapless.normal.dst
+		local keys = nil
+		if glowdar.colorkey ~= false then
+			keys = {}
+			for _, input in ipairs(glowdar.input_colors or { "#4DE1CA", "#4EE4CC" }) do
+				keys[#keys + 1] = { input = input, output = glowdar.output or "#FFFFFF" }
+			end
+		end
+		register_stable_strips("glowdar", src, dst, { "normal" }, keys)
 	end
 
 	local measure_w, measure_h = cfg.measuring.dst_w, cfg.measuring.dst_h
@@ -214,6 +320,15 @@ return function(cfg, remaps)
 	-- waywork README: set_sensitivity(0) restores config.input.sensitivity
 	local function reset_sens()
 		waywall.set_sensitivity(0)
+	end
+
+	-- Fullscreen-only mirrors (mapless + glowdar) live in "normal".
+	-- Sync after ModeManager updates `active` — never during config load
+	-- (waywall forbids creating mirrors at startup).
+	local _transition_to = ModeManager._transition_to
+	function ModeManager:_transition_to(name)
+		_transition_to(self, name)
+		scene:enable_group("normal", self.active == nil)
 	end
 
 	ModeManager:define("thin", {
@@ -272,16 +387,23 @@ return function(cfg, remaps)
 		if ModeManager.active then
 			ModeManager:_transition_to(nil)
 		else
-			waywall.set_resolution(0, 0)
+			-- pcall: set_resolution is illegal during early "load" / before a client attaches.
+			pcall(waywall.set_resolution, 0, 0)
 			scene:enable_group("thin", false)
 			scene:enable_group("eyezoom", false)
 			scene:enable_group("preemptive", false)
+			scene:enable_group("normal", true)
 			reset_sens()
 		end
 	end
 
 	waywall.listen("load", function()
-		reset_to_fullscreen()
+		-- Enable fullscreen mirrors only — do not set_resolution here (startup).
+		scene:enable_group("thin", false)
+		scene:enable_group("eyezoom", false)
+		scene:enable_group("preemptive", false)
+		scene:enable_group("normal", true)
+		reset_sens()
 
 		-- Wait for title screen before launching NinB.
 		repeat
