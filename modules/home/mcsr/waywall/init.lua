@@ -20,10 +20,10 @@ local ensure_ninjabrain = Processes.ensure_application(waywall, cfg.ninjabrain_b
 local ensure_paceman =
 	Processes.ensure_application(waywall, cfg.paceman_tracker, { "--nogui" })("paceman-tracker.*\\.jar")
 
-local display = { w = cfg.resolution[1], h = cfg.resolution[2] }
-local thin_res = { w = cfg.thin_res[1], h = cfg.thin_res[2] }
-local wide_res = { w = cfg.wide_res[1], h = cfg.wide_res[2] }
-local tall_res = { w = cfg.tall_res[1], h = cfg.tall_res[2] }
+local display = { w = cfg.fullscreen[1], h = cfg.fullscreen[2] }
+local thin = { w = cfg.thin[1], h = cfg.thin[2] }
+local wide = { w = cfg.wide[1], h = cfg.wide[2] }
+local tall = { w = cfg.tall[1], h = cfg.tall[2] }
 
 local normal_sens = cfg.sens.normal
 local eyezoom_sens = cfg.sens.eyezoom
@@ -53,18 +53,6 @@ local config = {
 }
 
 local scene = Scene.SceneManager.new(waywall)
-
--- https://tesselslate.github.io/waywall/02_waywall_mirror.html
-local pie_colors = {
-	{ input = "#EC6E4E", output = cfg.pie_chart_1 },
-	{ input = "#763727", output = cfg.pie_chart_1_dark or "#763727" },
-	{ input = "#46CE66", output = cfg.pie_chart_2 },
-	{ input = "#236733", output = cfg.pie_chart_2_dark or "#236733" },
-	{ input = "#CC6C46", output = cfg.pie_chart_2 },
-	{ input = "#464C46", output = cfg.pie_chart_2 },
-	{ input = "#E446C4", output = cfg.pie_chart_3 },
-	{ input = "#722362", output = cfg.pie_chart_3_dark or "#722362" },
-}
 
 -- Fake outline: offset colorkey mirrors under the glyph.
 local border_cfg = cfg.number_border or { enabled = false }
@@ -127,50 +115,8 @@ local function register_keyed(name_prefix, src, dst, groups, keys, depth, opts)
 	end
 end
 
--- E / C: separate F3-line mirrors.
-local F3_CHAR_W, F3_LABEL, F3_LINE_H = 6, 3, 9
-local ec = cfg.e_count
-local ec_size = ec.size
-local ec_keys = ec.colorkey and { { input = "#DDDDDD", output = cfg.text_col } } or nil
-
-if ec.enabled then
-	local e_w = (F3_LABEL + (ec.e_chars or 4)) * F3_CHAR_W
-	local ec_src = { x = 1, y = 37, w = e_w, h = F3_LINE_H }
-	local ec_dst = {
-		x = ec.x,
-		y = ec.y,
-		w = e_w * ec_size,
-		h = F3_LINE_H * ec_size,
-	}
-	register_keyed("e_counter", ec_src, ec_dst, { "thin", "eyezoom", "preemptive" }, ec_keys, 2)
-end
-
-if ec.show_c then
-	local c_w = (F3_LABEL + (ec.c_chars or 8)) * F3_CHAR_W
-	local cc_src = { x = 1, y = 28, w = c_w, h = F3_LINE_H }
-	local cc_dst = {
-		x = ec.x,
-		y = ec.c_y or (ec.y - F3_LINE_H * ec_size),
-		w = c_w * ec_size,
-		h = F3_LINE_H * ec_size,
-	}
-	register_keyed("c_counter", cc_src, cc_dst, { "thin", "eyezoom", "preemptive" }, ec_keys, 2)
-end
-
--- Tall pie / number mirrors: absolute src+dst from settings.lua.
-local pie = cfg.tall_pie
-if pie.enabled then
-	register_keyed("tall_pie", pie.src, pie.dst, { "preemptive" }, pie.colorkey and pie_colors or nil, 2, {
-		use_border = false,
-	})
-end
-
-local pct = cfg.percent or { enabled = false }
-local mapless = cfg.mapless or { enabled = false }
-local glowdar = cfg.glowdar or { enabled = false }
-
 -- Several strips → one dst so the glyph stays put when pie rows reorder.
-local function register_stable_strips(name_prefix, src, dst, groups, keys, rows, step)
+local function register_stable_strips(name_prefix, src, dst, groups, keys, rows, step, opts)
 	rows = rows or 4
 	step = step or 8
 	for i = 0, rows - 1 do
@@ -179,59 +125,62 @@ local function register_stable_strips(name_prefix, src, dst, groups, keys, rows,
 			y = src.y + step * i,
 			w = src.w,
 			h = src.h,
-		}, dst, groups, keys, 3)
+		}, dst, groups, keys, 3, opts)
 	end
 end
 
-if pct.enabled then
-	local rows = pct.rows or 4
-	local step = pct.row_step or 8
-	local be_keys = {
-		{
-			input = "#E96D4D",
-			output = pct.match_text and cfg.text_col or cfg.pie_chart_1,
-		},
-	}
-	local un_keys = {
-		{
-			input = "#45CB65",
-			output = pct.match_text and cfg.text_col or cfg.pie_chart_2,
-		},
-	}
-	register_stable_strips("thin_percent_be", pct.thin_src, pct.blockentities, { "thin" }, be_keys, rows, step)
-	register_stable_strips("thin_percent_un", pct.thin_src, pct.unspecified, { "thin" }, un_keys, rows, step)
-	register_stable_strips("tall_percent_be", pct.tall_src, pct.blockentities, { "preemptive" }, be_keys, rows, step)
-	register_stable_strips("tall_percent_un", pct.tall_src, pct.unspecified, { "preemptive" }, un_keys, rows, step)
-end
-
-if mapless.enabled then
-	local rows = mapless.rows or 4
-	local step = mapless.row_step or 8
-	local keys = {
-		{
-			input = "#E96D4D",
-			output = mapless.output or cfg.text_col or "#FFFFFF",
-		},
-	}
-	register_stable_strips("thin_mapless", mapless.thin.src, mapless.thin.dst, { "thin" }, keys, rows, step)
-	register_stable_strips("normal_mapless", mapless.normal.src, mapless.normal.dst, { "normal" }, keys, rows, step)
-end
-
-if glowdar.enabled then
-	local rows = glowdar.rows or 4
-	local step = glowdar.row_step or 8
-	local keys = nil
-	if glowdar.colorkey ~= false then
-		keys = {}
-		for _, input in ipairs(glowdar.input_colors or { "#4DE1CA", "#4EE4CC" }) do
-			keys[#keys + 1] = { input = input, output = glowdar.output or "#FFFFFF" }
+-- Mirrors from settings.mirrors[].
+-- m.defaults = shared input/output/modes/src/dst/depth/use_border; each item may override.
+-- Optional stable = { rows, row_step } → stable strips instead of a single absolute mirror.
+for _, m in ipairs(cfg.mirrors or {}) do
+	if m.enabled ~= false then
+		local dfl = m.defaults or {}
+		local items = m.items
+		local stable = m.stable
+		local rows = stable and (stable.rows or 4)
+		local step = stable and (stable.row_step or 8)
+		local function register_mirror(name, src, dst, modes, keys, depth, opts)
+			if stable then
+				register_stable_strips(name, src, dst, modes, keys, rows, step, opts)
+			else
+				register_keyed(name, src, dst, modes, keys, depth or 2, opts)
+			end
+		end
+		if not items or #items == 0 then
+			local keys = nil
+			if dfl.input ~= nil then
+				keys = { { input = dfl.input, output = dfl.output or cfg.text_col } }
+			end
+			register_mirror(m.name, dfl.src, dfl.dst, dfl.modes, keys, dfl.depth, {
+				use_border = dfl.use_border,
+			})
+		else
+			for i, item in ipairs(items) do
+				local input = item.input or dfl.input
+				local keys = nil
+				if input ~= nil then
+					keys = { { input = input, output = item.output or dfl.output or cfg.text_col } }
+				end
+				local use_border = dfl.use_border
+				if item.use_border ~= nil then
+					use_border = item.use_border
+				end
+				register_mirror(
+					m.name .. "_" .. i,
+					item.src or dfl.src,
+					item.dst or dfl.dst,
+					item.modes or dfl.modes,
+					keys,
+					item.depth or dfl.depth,
+					{ use_border = use_border }
+				)
+			end
 		end
 	end
-	register_stable_strips("glowdar", glowdar.src, glowdar.dst, { "normal" }, keys, rows, step)
 end
 
 local measure_w, measure_h = cfg.measuring.dst_w, cfg.measuring.dst_h
-local left_gap = (display.w - tall_res.w) / 2
+local left_gap = (display.w - tall.w) / 2
 local measure_dst = {
 	x = (left_gap - measure_w) / 2,
 	y = (display.h - measure_h) / 2,
@@ -244,8 +193,8 @@ scene:register("eye_measure", {
 	kind = "mirror",
 	options = {
 		src = {
-			x = (tall_res.w - cfg.measuring.src_w) / 2,
-			y = (tall_res.h - cfg.measuring.src_h) / 2,
+			x = (tall.w - cfg.measuring.src_w) / 2,
+			y = (tall.h - cfg.measuring.src_h) / 2,
 			w = cfg.measuring.src_w,
 			h = cfg.measuring.src_h,
 		},
@@ -287,8 +236,8 @@ function ModeManager:_transition_to(name)
 end
 
 ModeManager:define("thin", {
-	width = thin_res.w,
-	height = thin_res.h,
+	width = thin.w,
+	height = thin.h,
 	toggle_guard = mode_guard,
 	on_enter = function()
 		scene:enable_group("thin", true)
@@ -301,8 +250,8 @@ ModeManager:define("thin", {
 })
 
 ModeManager:define("wide", {
-	width = wide_res.w,
-	height = wide_res.h,
+	width = wide.w,
+	height = wide.h,
 	toggle_guard = mode_guard,
 	on_enter = reset_sens,
 	on_exit = reset_sens,
@@ -310,8 +259,8 @@ ModeManager:define("wide", {
 
 -- Eyezoom: boat-eye measure overlay; no tall pie mirror.
 ModeManager:define("eyezoom", {
-	width = tall_res.w,
-	height = tall_res.h,
+	width = tall.w,
+	height = tall.h,
 	toggle_guard = mode_guard,
 	on_enter = function()
 		scene:enable_group("eyezoom", true)
@@ -325,8 +274,8 @@ ModeManager:define("eyezoom", {
 
 -- Preemptive: tall pie mirror; no boat-eye measure overlay.
 ModeManager:define("preemptive", {
-	width = tall_res.w,
-	height = tall_res.h,
+	width = tall.w,
+	height = tall.h,
 	toggle_guard = mode_guard,
 	on_enter = function()
 		scene:enable_group("preemptive", true)
