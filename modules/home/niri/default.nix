@@ -224,6 +224,26 @@ in
               "@DEFAULT_AUDIO_SOURCE@"
               "toggle"
             ];
+            "XF86AudioPlay".action.spawn = [
+              "playerctl"
+              "play-pause"
+            ];
+            "XF86AudioNext".action.spawn = [
+              "playerctl"
+              "next"
+            ];
+            "XF86AudioPrev".action.spawn = [
+              "playerctl"
+              "previous"
+            ];
+            "XF86AudioStop".action.spawn = [
+              "playerctl"
+              "stop"
+            ];
+
+            # Compx multimedia / launcher keys
+            "XF86Explorer".action.spawn = [ "thunar" ];
+            "XF86HomePage".action.spawn = [ "microsoft-edge" ];
 
             "Print".action.screenshot = { };
             "Shift+Print".action.screenshot-window = { };
@@ -257,7 +277,10 @@ in
       };
     in
     {
-      home.packages = [ pkgs.xwayland-satellite ];
+      home.packages = [
+        pkgs.xwayland-satellite
+        pkgs.playerctl
+      ];
 
       programs.niri = {
         package = pkgs.niri;
