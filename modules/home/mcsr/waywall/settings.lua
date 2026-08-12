@@ -118,7 +118,7 @@ local mirrors = {
 				dst = { x = 1280, y = 1235, w = 125, h = 35 },
 			},
 			{
-				modes = { "normal" },
+				modes = { "fullscreen" },
 				src = { x = 2518, y = 1380, w = 25, h = 7 },
 				dst = { x = 2395, y = 1290, w = 125, h = 35 },
 			},
@@ -131,7 +131,7 @@ local mirrors = {
 			{
 				input = "#4DE1CA",
 				output = "#4DE1CA",
-				modes = { "normal" },
+				modes = { "fullscreen" },
 				src = { x = 2468, y = 1380, w = 25, h = 7 },
 				dst = { x = 2395, y = 1290, w = 125, h = 35 },
 			},

@@ -226,13 +226,42 @@ local function reset_sens()
 	waywall.set_sensitivity(0)
 end
 
--- Fullscreen-only mirrors (mapless + glowdar) live in "normal".
--- Sync after ModeManager updates `active` — never during config load
--- (waywall forbids creating mirrors at startup).
-local _transition_to = ModeManager._transition_to
-function ModeManager:_transition_to(name)
-	_transition_to(self, name)
-	scene:enable_group("normal", self.active == nil)
+local function enter_fullscreen_groups()
+	scene:enable_group("thin", false)
+	scene:enable_group("eyezoom", false)
+	scene:enable_group("preemptive", false)
+	scene:enable_group("fullscreen", true)
+	reset_sens()
+end
+
+-- Native resolution via 0,0 (waywork exit_active uses the same).
+ModeManager:define("fullscreen", {
+	width = 0,
+	height = 0,
+	on_enter = enter_fullscreen_groups,
+	on_exit = function()
+		scene:enable_group("fullscreen", false)
+	end,
+})
+
+-- Route nil → fullscreen so toggle-off never leaves an unmodeled state.
+local function go(name)
+	ModeManager:_transition_to(name == nil and "fullscreen" or name)
+end
+
+function ModeManager:toggle(name)
+	local def = self.defs[name]
+	if not def then
+		return
+	end
+	if def.toggle_guard and def.toggle_guard() == false then
+		return false
+	end
+	if name == self.active then
+		go("fullscreen")
+	else
+		go(name)
+	end
 end
 
 ModeManager:define("thin", {
@@ -288,26 +317,20 @@ ModeManager:define("preemptive", {
 })
 
 local function reset_to_fullscreen()
-	if ModeManager.active then
-		ModeManager:_transition_to(nil)
+	if ModeManager.active and ModeManager.active ~= "fullscreen" then
+		go("fullscreen")
 	else
 		-- pcall: set_resolution is illegal during early "load" / before a client attaches.
 		pcall(waywall.set_resolution, 0, 0)
-		scene:enable_group("thin", false)
-		scene:enable_group("eyezoom", false)
-		scene:enable_group("preemptive", false)
-		scene:enable_group("normal", true)
-		reset_sens()
+		enter_fullscreen_groups()
+		ModeManager.active = "fullscreen"
 	end
 end
 
 waywall.listen("load", function()
 	-- Enable fullscreen mirrors only — do not set_resolution here (startup).
-	scene:enable_group("thin", false)
-	scene:enable_group("eyezoom", false)
-	scene:enable_group("preemptive", false)
-	scene:enable_group("normal", true)
-	reset_sens()
+	enter_fullscreen_groups()
+	ModeManager.active = "fullscreen"
 
 	-- Wait for title screen before launching NinB.
 	repeat
