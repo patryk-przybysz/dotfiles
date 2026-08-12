@@ -31,7 +31,6 @@ in
     home.file = {
       ".config/xkb/symbols/mc".source = ./xkb/mc;
       ".config/waywall/settings.lua".source = ./settings.lua;
-      ".config/waywall/main.lua".source = ./main.lua;
       ".config/waywall/remaps.lua".source = ./remaps.lua;
       ".config/waywall/extras.lua".source = ./extras.lua;
     };
