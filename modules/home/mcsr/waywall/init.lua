@@ -82,9 +82,11 @@ local function border_offsets(thickness)
 end
 
 -- Register one or more colorkey mirrors; optional black outline via shifted copies.
-local function register_keyed(name_prefix, src, dst, groups, keys, depth, use_border)
+-- opts: optional flags only — e.g. { use_border = false }. Omit (or true) to allow outlines.
+local function register_keyed(name_prefix, src, dst, groups, keys, depth, opts)
+	opts = opts or {}
 	local d = depth or 2
-	if use_border ~= false and border_cfg.enabled and keys then
+	if opts.use_border ~= false and border_cfg.enabled and keys then
 		local bcol = border_cfg.color or "#000000"
 		local offs = border_offsets(border_cfg.thickness or 1)
 		for ki, ck in ipairs(keys) do
@@ -140,7 +142,7 @@ if ec.enabled then
 		w = e_w * ec_size,
 		h = F3_LINE_H * ec_size,
 	}
-	register_keyed("e_counter", ec_src, ec_dst, { "thin", "eyezoom", "preemptive" }, ec_keys, 2, true)
+	register_keyed("e_counter", ec_src, ec_dst, { "thin", "eyezoom", "preemptive" }, ec_keys, 2)
 end
 
 if ec.show_c then
@@ -152,29 +154,15 @@ if ec.show_c then
 		w = c_w * ec_size,
 		h = F3_LINE_H * ec_size,
 	}
-	register_keyed("c_counter", cc_src, cc_dst, { "thin", "eyezoom", "preemptive" }, ec_keys, 2, true)
+	register_keyed("c_counter", cc_src, cc_dst, { "thin", "eyezoom", "preemptive" }, ec_keys, 2)
 end
 
 -- Tall pie / number mirrors: absolute src+dst from settings.lua.
 local pie = cfg.tall_pie
 if pie.enabled then
-	local pie_src = pie.src
-	local pie_dst = pie.dst
-	if pie.colorkey then
-		for i, ck in ipairs(pie_colors) do
-			scene:register("tall_pie_" .. i, {
-				kind = "mirror",
-				options = { src = pie_src, dst = pie_dst, depth = 2, color_key = ck },
-				groups = { "preemptive" },
-			})
-		end
-	else
-		scene:register("tall_pie_all", {
-			kind = "mirror",
-			options = { src = pie_src, dst = pie_dst, depth = 2 },
-			groups = { "preemptive" },
-		})
-	end
+	register_keyed("tall_pie", pie.src, pie.dst, { "preemptive" }, pie.colorkey and pie_colors or nil, 2, {
+		use_border = false,
+	})
 end
 
 local pct = cfg.percent or { enabled = false }
@@ -191,7 +179,7 @@ local function register_stable_strips(name_prefix, src, dst, groups, keys, rows,
 			y = src.y + step * i,
 			w = src.w,
 			h = src.h,
-		}, dst, groups, keys, 3, true)
+		}, dst, groups, keys, 3)
 	end
 end
 
