@@ -17,22 +17,21 @@ in
     limine.enable = true;
     gaming.enable = true;
     nvidia.enable = true;
-    # Dedicated RAM disk for RSG worlds — not boot.tmp.useTmpfs (/tmp).
     # https://its-saanvi.github.io/linux-mcsr/tmpfs.html
-    # Pattern: https://github.com/flammablebunny/flake (hosts/pc tmpfs + cleanup)
+    # https://github.com/flammablebunny/flake
     mcsr.tmpfs = {
       enable = true;
       size = "4G";
       keepWorlds = 1000;
-      instances.RSG.savesPath = "/home/patryk/.local/share/PrismLauncher/instances/1.16.1 RSG/minecraft/saves";
+      instances = {
+        RSG.savesPath = "/home/patryk/.local/share/PrismLauncher/instances/1.16.1 RSG/minecraft/saves";
+        Ranked.savesPath = "/home/patryk/.local/share/PrismLauncher/instances/1.16.1 Ranked/minecraft/saves";
+      };
     };
   };
 
-  # Kernel 7.1 for the new in-kernel ntfs driver used below
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # Shared Windows games library on the new in-kernel ntfs driver (7.1+).
-  # nofail so a hibernation-locked drive can't block boot.
   fileSystems."/media/games" = {
     device = "/dev/disk/by-uuid/D0C0A2DCC0A2C854";
     fsType = "ntfs";
@@ -46,8 +45,6 @@ in
     ];
   };
 
-  # Proton prefixes must stay on a Linux fs. The in-kernel ntfs driver
-  # doesn't expose NTFS symlinks as symlinks, so bind-mount instead.
   fileSystems."/media/games/SteamLibrary/steamapps/compatdata" = {
     device = "/home/patryk/.steam/steam/steamapps/compatdata-games";
     fsType = "none";
@@ -64,7 +61,6 @@ in
     networkmanager.enable = true;
   };
 
-  # Prefixes each generation label in the Limine boot menu (system.nixos.label).
   system.nixos.tags = [ config.networking.hostName ];
 
   time.timeZone = "Europe/Warsaw";
@@ -126,7 +122,6 @@ in
   '';
 
   # https://its-saanvi.github.io/linux-mcsr/drag-clicking.html
-  # libinput debounces fast successive clicks by default; drag clicking needs that off.
   environment.etc."libinput/local-overrides.quirks".text = ''
     [Never Debounce]
     MatchUdevType=mouse
@@ -137,7 +132,6 @@ in
 
   security.rtkit.enable = true;
 
-  # https://wiki.nixos.org/wiki/OBS_Studio — cudaSupport adds NVENC driver runpaths
   programs.obs-studio = {
     enable = true;
     package = pkgs.obs-studio.override {
