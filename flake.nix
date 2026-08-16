@@ -40,6 +40,13 @@
       url = "https://git.uku3lig.net/uku/mcsr-nixos/archive/main.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # e4mc as a standalone tool (built from source)
+    # https://github.com/patryk-przybysz/e4mcbiat-nix
+    e4mcbiat = {
+      url = "github:patryk-przybysz/e4mcbiat-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

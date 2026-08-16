@@ -21,6 +21,26 @@
         "type": "github"
       }
     },
+    "e4mcbiat": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786897282,
+        "narHash": "sha256-V/w3MUQedDtuotEDdVmjrfjPql6JuxOBL1ofilc0aKQ=",
+        "owner": "patryk-przybysz",
+        "repo": "e4mcbiat-nix",
+        "rev": "d296d4f4175885c1790de375499776993ff102ea",
+        "type": "github"
+      },
+      "original": {
+        "owner": "patryk-przybysz",
+        "repo": "e4mcbiat-nix",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -572,6 +592,7 @@
     "root": {
       "inputs": {
         "blueprint": "blueprint",
+        "e4mcbiat": "e4mcbiat",
         "gen-luarc": "gen-luarc",
         "git-hooks": "git-hooks_2",
         "home-manager": "home-manager",
