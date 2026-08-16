@@ -56,6 +56,11 @@ in
 
   boot.loader.efi.canTouchEfiVariables = true;
 
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
   networking = {
     hostName = "an16-41";
     networkmanager.enable = true;
