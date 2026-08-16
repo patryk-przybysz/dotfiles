@@ -28,11 +28,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786897282,
-        "narHash": "sha256-V/w3MUQedDtuotEDdVmjrfjPql6JuxOBL1ofilc0aKQ=",
+        "lastModified": 1786899040,
+        "narHash": "sha256-Y++wtBdNQ1FYKQ85XcNWfgv6iJDsoybSZs+klufYSn8=",
         "owner": "patryk-przybysz",
         "repo": "e4mcbiat-nix",
-        "rev": "d296d4f4175885c1790de375499776993ff102ea",
+        "rev": "acb5f7dc225cf0746f3913d3265bb7588e205d4c",
         "type": "github"
       },
       "original": {
