@@ -17,6 +17,12 @@ in
     limine.enable = true;
     gaming.enable = true;
     nvidia.enable = true;
+    damx = {
+      enable = true;
+      # DMI match is flaky; GUI stayed Unknown after reboot without this.
+      # https://github.com/PXDiv/Div-Acer-Manager-Max/issues/22
+      force = "nitro_v4";
+    };
     # https://its-saanvi.github.io/linux-mcsr/tmpfs.html
     # https://github.com/flammablebunny/flake
     mcsr.tmpfs = {

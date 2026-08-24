@@ -199,6 +199,8 @@ in
           // workspaceMoveBinds
           // columnToWorkspaceBinds
           // {
+            # Acer Nitro/Predator Sense key (hwdb maps scancode 0xf5 → XF86Launch1)
+            "XF86Launch1".action.spawn = [ "DAMX" ];
             # Media keys
             "XF86AudioRaiseVolume".action.spawn = [
               "wpctl"
