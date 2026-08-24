@@ -36,7 +36,10 @@
   };
 
   home = {
-    packages = [ pkgs.spotify ];
+    packages = [
+      pkgs.spotify
+      pkgs.unrar
+    ];
     stateVersion = "26.05";
     language.base = "en_US.UTF-8";
   };
