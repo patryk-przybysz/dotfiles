@@ -19,6 +19,7 @@
   libdrm,
   libGL,
   libglvnd,
+  pciutils,
   libICE,
   libSM,
   libX11,
@@ -121,6 +122,7 @@ stdenv.mkDerivation {
     makeWrapper $out/share/damx/DivAcerManagerMax $out/bin/DAMX \
       --chdir $out/share/damx \
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeLibs}:$out/share/damx" \
+      --prefix PATH : ${lib.makeBinPath [ pciutils ]} \
       --set DOTNET_SYSTEM_GLOBALIZATION_INVARIANT 0
     ln -s DAMX $out/bin/damx-gui
     runHook postInstall

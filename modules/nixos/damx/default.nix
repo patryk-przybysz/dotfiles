@@ -50,9 +50,10 @@ in
       );
       default = null;
       description = ''
-        Permanent linuwu_sense module parameter at load (same as DAMX Internals
-        Manager force modes). Use if the GUI shows Unknown model after reboot
-        even on a listed model — DMI matching is flaky on some Acer firmware.
+        Permanent linuwu_sense module parameter at load (Internals Manager
+        force modes). Only for models missing from the driver's DMI table.
+        Listed models such as Nitro AN16-41 should leave this unset so DMI
+        can apply four-zone keyboard quirks.
       '';
     };
 
@@ -107,32 +108,55 @@ in
        KEYBOARD_KEY_f5=prog1
     '';
 
-    systemd.services.damx-daemon = {
-      description = "DAMX Daemon for Acer laptops";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "systemd-modules-load.service" ];
-      wants = [ "systemd-modules-load.service" ];
-      path = [
-        pkgs.kmod
-        pkgs.sudo
-        pkgs.coreutils
+    systemd = {
+      # Internals Manager writes this path; it skips DMI if nitro_v4=1 is set.
+      tmpfiles.rules = [
+        "r /etc/modprobe.d/linuwu-sense.conf"
       ];
-      serviceConfig = {
-        Type = "simple";
-        ExecStart = "${cfg.daemonPackage}/bin/DAMX-Daemon";
-        Restart = "on-failure";
-        RestartSec = 5;
-      };
-    };
 
-    # Upstream Linuwu-Sense ships a oneshot that rmmod's on shutdown.
-    systemd.services.linuwu-sense-unload = lib.mkIf cfg.installDrivers {
-      description = "Unload linuwu_sense at shutdown";
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStop = "${pkgs.kmod}/bin/rmmod linuwu_sense";
+      services.damx-daemon = {
+        description = "DAMX Daemon for Acer laptops";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "systemd-modules-load.service" ];
+        wants = [ "systemd-modules-load.service" ];
+        path = [
+          pkgs.kmod
+          pkgs.sudo
+          pkgs.coreutils
+        ];
+        serviceConfig = {
+          Type = "simple";
+          # WMI/sysfs (nitro_sense) can appear after the module is listed in lsmod.
+          # The daemon samples type once at start; UNKNOWN sticks until restart.
+          ExecStartPre = pkgs.writeShellScript "damx-wait-linuwu-sysfs" ''
+            set -eu
+            nitro=/sys/module/linuwu_sense/drivers/platform:acer-wmi/acer-wmi/nitro_sense
+            predator=/sys/module/linuwu_sense/drivers/platform:acer-wmi/acer-wmi/predator_sense
+            i=0
+            while [ "$i" -lt 50 ]; do
+              if [ -d "$nitro" ] || [ -d "$predator" ]; then
+                exit 0
+              fi
+              i=$((i + 1))
+              sleep 0.2
+            done
+            exit 0
+          '';
+          ExecStart = "${cfg.daemonPackage}/bin/DAMX-Daemon";
+          Restart = "on-failure";
+          RestartSec = 5;
+        };
+      };
+
+      # Upstream Linuwu-Sense ships a oneshot that rmmod's on shutdown.
+      services.linuwu-sense-unload = lib.mkIf cfg.installDrivers {
+        description = "Unload linuwu_sense at shutdown";
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStop = "${pkgs.kmod}/bin/rmmod linuwu_sense";
+        };
       };
     };
 
