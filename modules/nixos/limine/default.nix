@@ -19,31 +19,39 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    boot.loader.systemd-boot.enable = lib.mkForce false;
+    environment.systemPackages = [ pkgs.sbctl ];
 
-    boot.loader.limine = {
-      enable = true;
-      enableEditor = false;
-      inherit (cfg) maxGenerations;
-      extraEntries = ''
-        /Windows Boot Manager
-          protocol: efi
-          path: boot():/EFI/Microsoft/Boot/bootmgfw.efi
-      '';
-      style = {
-        wallpapers = [ ];
-        backdrop = "000000";
-        interface = {
-          helpHidden = true;
-          brandingColor = "666666";
-          helpColor = "444444";
-          helpColorBright = "888888";
-        };
-        graphicalTerminal = {
-          background = "ff000000";
-          foreground = "cccccc";
-          brightForeground = "ffffff";
-          brightBackground = "333333";
+    boot.loader = {
+      systemd-boot.enable = lib.mkForce false;
+      timeout = 1;
+      limine = {
+        enable = true;
+        enableEditor = false;
+        secureBoot.enable = true;
+        inherit (cfg) maxGenerations;
+        extraConfig = ''
+          quiet: yes
+        '';
+        extraEntries = ''
+          /Windows Boot Manager
+            protocol: efi
+            path: boot():/EFI/Microsoft/Boot/bootmgfw.efi
+        '';
+        style = {
+          wallpapers = [ ];
+          backdrop = "000000";
+          interface = {
+            helpHidden = true;
+            brandingColor = "666666";
+            helpColor = "444444";
+            helpColorBright = "888888";
+          };
+          graphicalTerminal = {
+            background = "ff000000";
+            foreground = "cccccc";
+            brightForeground = "ffffff";
+            brightBackground = "333333";
+          };
         };
       };
     };
