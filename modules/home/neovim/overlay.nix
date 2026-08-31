@@ -4,7 +4,7 @@ with final.lib;
 let
   pkgs = final;
 
-  pkgs-locked = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  pkgs-locked = inputs.nixpkgs.legacyPackages.${prev.system};
 
   mkNeovim = pkgs.callPackage ./mkNeovim.nix {
     inherit (pkgs-locked) wrapNeovimUnstable neovimUtils;

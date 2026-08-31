@@ -1,13 +1,12 @@
 {
   config,
   lib,
-  pkgs,
-  inputs,
+  perSystem,
   ...
 }:
 let
   cfg = config.my.home.mcsr;
-  e4mcbiat = inputs.e4mcbiat.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  e4mcbiat = perSystem.e4mcbiat.default;
 in
 {
   options.my.home.mcsr.e4mcbiat.enable = lib.mkOption {

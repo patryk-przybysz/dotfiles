@@ -3,11 +3,12 @@
   lib,
   pkgs,
   inputs,
+  perSystem,
   ...
 }:
 let
   cfg = config.my.home.mcsr;
-  mcsrPkgs = inputs.mcsr.packages.${pkgs.stdenv.hostPlatform.system};
+  mcsrPkgs = perSystem.mcsr;
 
   # https://tesselslate.github.io/waywall/01_ninb.html (NixOS blank Swing window)
   ninjabrain-bot = mcsrPkgs.ninjabrain-bot.override {

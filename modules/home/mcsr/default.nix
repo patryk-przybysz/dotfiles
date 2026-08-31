@@ -2,12 +2,12 @@
   config,
   lib,
   pkgs,
-  inputs,
+  perSystem,
   ...
 }:
 let
   cfg = config.my.home.mcsr;
-  mcsrPkgs = inputs.mcsr.packages.${pkgs.stdenv.hostPlatform.system};
+  mcsrPkgs = perSystem.mcsr;
 in
 {
   imports = [

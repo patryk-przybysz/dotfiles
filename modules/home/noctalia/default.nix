@@ -3,11 +3,11 @@
   lib,
   pkgs,
   inputs,
+  perSystem,
   ...
 }:
 let
   cfg = config.my.home.noctalia;
-  system = pkgs.stdenv.hostPlatform.system;
   wallpaperDir = "${config.home.homeDirectory}/Pictures/Wallpapers";
   wallpaperFile = "${wallpaperDir}/sylas.jpg";
 
@@ -42,7 +42,7 @@ in
 
     programs.noctalia = {
       enable = true;
-      package = inputs.noctalia.packages.${system}.default;
+      package = perSystem.noctalia.default;
 
       settings = {
         notification = {

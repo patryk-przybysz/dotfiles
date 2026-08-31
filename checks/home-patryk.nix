@@ -1,2 +1,2 @@
-{ inputs, pkgs, ... }:
-inputs.self.legacyPackages.${pkgs.system}.homeConfigurations."patryk@ubuntu-wsl".activationPackage
+{ inputs, system, ... }:
+inputs.self.legacyPackages.${system}.homeConfigurations."patryk@ubuntu-wsl".activationPackage
