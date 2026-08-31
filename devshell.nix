@@ -1,6 +1,11 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  system,
+  ...
+}:
 let
-  pre-commit-check = import ./checks/pre-commit-check.nix { inherit inputs pkgs; };
+  pre-commit-check = import ./checks/pre-commit-check.nix { inherit inputs pkgs system; };
 in
 pkgs.mkShell {
   packages = with pkgs; [

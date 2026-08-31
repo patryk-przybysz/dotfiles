@@ -1,8 +1,13 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  system,
+  ...
+}:
 let
   treefmtEval = inputs.treefmt.lib.evalModule pkgs ../treefmt.nix;
 in
-inputs.git-hooks.lib.${pkgs.stdenv.hostPlatform.system}.run {
+inputs.git-hooks.lib.${system}.run {
   src = inputs.self;
   hooks = {
     nil.enable = true;
