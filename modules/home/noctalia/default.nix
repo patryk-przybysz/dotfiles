@@ -11,15 +11,6 @@ let
   wallpaperDir = "${config.home.homeDirectory}/Pictures/Wallpapers";
   wallpaperFile = "${wallpaperDir}/sylas.jpg";
 
-  # Taskbar pill gap is hardcoded to Style::spaceSm (8px); bump to spaceMd (12px).
-  noctaliaPackage = inputs.noctalia.packages.${system}.default.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      substituteInPlace src/shell/bar/widgets/taskbar_widget.cpp \
-        --replace-fail 'const float tileGap = Style::spaceSm * m_contentScale;' \
-                        'const float tileGap = Style::spaceMd * m_contentScale;'
-    '';
-  });
-
   screenToolkitPackages = with pkgs; [
     hyprpicker
     grim
@@ -51,7 +42,7 @@ in
 
     programs.noctalia = {
       enable = true;
-      package = noctaliaPackage;
+      package = inputs.noctalia.packages.${system}.default;
 
       settings = {
         notification = {
@@ -93,11 +84,6 @@ in
         };
 
         bar = {
-          order = [
-            "main"
-            "tasks"
-          ];
-
           main = {
             position = "top";
             margin_edge = 8;
@@ -129,36 +115,26 @@ in
               "actions_group_gap"
               "clipboard"
               "notifications"
+              "tray"
               "session"
             ];
           };
+        };
 
-          tasks = {
-            position = "bottom";
-            margin_edge = 8;
-            margin_ends = 10;
-            background_opacity = 0;
-            shadow = false;
-            scale = 0.92;
-            auto_hide = true;
-            reserve_space = false;
-            widget_spacing = 14;
-
-            start = [ ];
-            center = [ "taskbar" ];
-            end = [ "group:tray" ];
-
-            capsule_group = [
-              {
-                id = "tray";
-                members = [ "tray" ];
-                enabled = true;
-                fill = "#1e1e2e";
-                radius = 12;
-                padding = 6;
-              }
-            ];
-          };
+        dock = {
+          enabled = true;
+          position = "bottom";
+          margin_edge = 8;
+          margin_ends = 10;
+          radius = 12;
+          background_opacity = 0.88;
+          shadow = false;
+          auto_hide = false;
+          smart_auto_hide = true;
+          reserve_space = false;
+          show_running = true;
+          item_spacing = 6;
+          icon_size = 44;
         };
 
         plugins.enabled = enabledPlugins;
@@ -168,18 +144,6 @@ in
         };
 
         widget = {
-          taskbar = {
-            only_active_workspace = true;
-            group_by_workspace = false;
-            show_window_title = true;
-            window_title_max_width = 100;
-            show_active_indicator = true;
-            capsule = true;
-            capsule_fill = "#1e1e2e";
-            capsule_radius = 12;
-            capsule_padding = 6;
-          };
-
           clock = {
             format = "{:%a, %d %b %Y %H:%M}";
           };
