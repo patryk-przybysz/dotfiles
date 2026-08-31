@@ -46,6 +46,14 @@
         "flakes"
       ];
       auto-optimise-store = true;
+      extra-substituters = [
+        "https://nix-community.cachix.org"
+        "https://devenv.cachix.org"
+      ];
+      extra-trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dRUhiXd/UhA17imdUmoYqt/5xVIXI0O+w="
+        "devenv.cachix.org-1:w1c0WM8sbBS/+2QQVKqHsBrun/NoCVH2EHnumwgLc4I="
+      ];
     };
   };
 }

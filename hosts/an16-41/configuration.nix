@@ -14,6 +14,7 @@ in
   imports = [ ./hardware-configuration.nix ] ++ builtins.attrValues inputs.self.nixosModules;
 
   my.nixos = {
+    nix.enable = true;
     limine.enable = true;
     gaming.enable = true;
     nvidia.enable = true;
@@ -156,11 +157,6 @@ in
       "wheel"
     ];
   };
-
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
 
   system.stateVersion = "26.05";
 }

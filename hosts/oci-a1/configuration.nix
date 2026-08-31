@@ -8,9 +8,12 @@
     ./hardware-configuration.nix
     inputs.nix-minecraft.nixosModules.minecraft-servers
     ./minecraft/bingo.nix
-  ];
+  ]
+  ++ builtins.attrValues inputs.self.nixosModules;
 
   nixpkgs.overlays = [ inputs.nix-minecraft.overlay ];
+
+  my.nixos.nix.enable = true;
 
   services.minecraft-servers = {
     enable = true;
@@ -58,11 +61,6 @@
     wget
     curl
     tmux
-  ];
-
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
   ];
 
   system.stateVersion = "26.05";
