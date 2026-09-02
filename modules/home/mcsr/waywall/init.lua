@@ -70,13 +70,13 @@ local function border_offsets(thickness)
 end
 
 -- Register one or more colorkey mirrors; optional black outline via shifted copies.
--- opts: optional flags only — e.g. { use_border = false }. Omit (or true) to allow outlines.
+-- opts: optional flags only — e.g. { use_border = false, border_thickness = 2 }. Omit (or true) to allow outlines.
 local function register_keyed(name_prefix, src, dst, groups, keys, depth, opts)
 	opts = opts or {}
 	local d = depth or 2
 	if opts.use_border ~= false and border_cfg.enabled and keys then
 		local bcol = border_cfg.color or "#000000"
-		local offs = border_offsets(border_cfg.thickness or 1)
+		local offs = border_offsets(opts.border_thickness or border_cfg.thickness or 1)
 		for ki, ck in ipairs(keys) do
 			for oi, off in ipairs(offs) do
 				scene:register(name_prefix .. "_b" .. ki .. "_" .. oi, {
@@ -130,7 +130,7 @@ local function register_stable_strips(name_prefix, src, dst, groups, keys, rows,
 end
 
 -- Mirrors from settings.mirrors[].
--- m.defaults = shared input/output/modes/src/dst/depth/use_border; each item may override.
+-- m.defaults = shared input/output/modes/src/dst/depth/use_border/border_thickness; each item may override.
 -- Optional stable = { rows, row_step } → stable strips instead of a single absolute mirror.
 for _, m in ipairs(cfg.mirrors or {}) do
 	if m.enabled ~= false then
@@ -153,6 +153,7 @@ for _, m in ipairs(cfg.mirrors or {}) do
 			end
 			register_mirror(m.name, dfl.src, dfl.dst, dfl.modes, keys, dfl.depth, {
 				use_border = dfl.use_border,
+				border_thickness = dfl.border_thickness,
 			})
 		else
 			for i, item in ipairs(items) do
@@ -165,6 +166,10 @@ for _, m in ipairs(cfg.mirrors or {}) do
 				if item.use_border ~= nil then
 					use_border = item.use_border
 				end
+				local border_thickness = dfl.border_thickness
+				if item.border_thickness ~= nil then
+					border_thickness = item.border_thickness
+				end
 				register_mirror(
 					m.name .. "_" .. i,
 					item.src or dfl.src,
@@ -172,7 +177,7 @@ for _, m in ipairs(cfg.mirrors or {}) do
 					item.modes or dfl.modes,
 					keys,
 					item.depth or dfl.depth,
-					{ use_border = use_border }
+					{ use_border = use_border, border_thickness = border_thickness }
 				)
 			end
 		end

@@ -20,6 +20,9 @@ local palette = {
 	pie_chart_1_dark = "#763727",
 	pie_chart_2_dark = "#236733",
 	pie_chart_3_dark = "#722362",
+}
+
+local ui = {
 	ninbot_anchor = "bottomleft",
 	ninbot_opacity = 1,
 	number_border = {
@@ -137,6 +140,21 @@ local mirrors = {
 			},
 		},
 	},
+	{
+		name = "difficulty",
+		defaults = {
+			border_thickness = 3,
+		},
+		items = {
+			{
+				input = "#DDDDDD",
+				output = "#7EFC20",
+				modes = { "fullscreen" },
+				src = { x = 420, y = 865, w = 96, h = 36 },
+				dst = { x = 1244, y = 1380, w = 72, h = 27 },
+			},
+		},
+	},
 }
 
 local measuring = {
@@ -181,7 +199,7 @@ local keyboard = {
 	},
 }
 
-return merge(palette, resolutions, {
+return merge(palette, ui, resolutions, {
 	mirrors = mirrors,
 	measuring = measuring,
 	sens = sens,
