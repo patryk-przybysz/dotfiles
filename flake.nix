@@ -37,7 +37,7 @@
     # Minecraft speedrunning packages + waywall HM/NixOS modules
     # https://git.uku3lig.net/uku/mcsr-nixos
     mcsr = {
-      url = "https://git.uku3lig.net/uku/mcsr-nixos/archive/main.tar.gz";
+      url = "git+https://git.uku3lig.net/uku/mcsr-nixos.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
