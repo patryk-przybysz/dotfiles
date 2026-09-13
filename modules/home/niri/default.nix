@@ -8,33 +8,18 @@
 let
   cfg = config.my.home.niri;
 
-  # suffix -> action; all bound on Alt
   binds = {
     # Focus
-    "H".focus-column-left = { };
-    "L".focus-column-right = { };
-    "K".focus-window-up = { };
-    "J".focus-window-down = { };
+    "A".focus-column-left = { };
+    "D".focus-column-right = { };
     "Left".focus-column-left = { };
     "Right".focus-column-right = { };
     "Up".focus-window-up = { };
     "Down".focus-window-down = { };
 
     # Move window
-    "Shift+H".move-column-left = { };
-    "Shift+L".move-column-right = { };
-    "Shift+K".move-window-up = { };
-    "Shift+J".move-window-down = { };
     "Shift+Left".move-column-left = { };
     "Shift+Right".move-column-right = { };
-    # Stack/unstack: GlazeWM move down/up joined windows into the same column.
-    # Down pulls the window to the right into this column; Up joins this window into the column on the left.
-    "Shift+Up".consume-or-expel-window-left = { };
-    "Shift+Down".consume-window-into-column = { };
-
-    # Consume/expel windows into/out of columns (niri's core stacking mechanic)
-    "Comma".consume-window-into-column = { };
-    "Period".expel-window-from-column = { };
 
     # Resize
     "U".set-column-width = "-10%";
@@ -71,23 +56,6 @@ let
     "B".spawn = [ "microsoft-edge" ];
     "E".spawn = [ "thunar" ];
 
-    # Workspaces
-    "S".focus-workspace-down = { };
-    "A".focus-workspace-up = { };
-    "D".focus-workspace-previous = { };
-
-    # Move workspace between monitors
-    "Shift+A".move-workspace-to-monitor-left = { };
-    "Shift+F".move-workspace-to-monitor-right = { };
-    "Shift+D".move-workspace-to-monitor-up = { };
-    "Shift+S".move-workspace-to-monitor-down = { };
-
-    # Focus other monitors
-    "Ctrl+H".focus-monitor-left = { };
-    "Ctrl+L".focus-monitor-right = { };
-    "Ctrl+K".focus-monitor-up = { };
-    "Ctrl+J".focus-monitor-down = { };
-
     # Session / help
     "Shift+E".quit = { };
     "Shift+Slash".show-hotkey-overlay = { };
@@ -95,21 +63,21 @@ let
 
   workspaceFocusBinds = builtins.listToAttrs (
     map (n: {
-      name = "Alt+${toString n}";
+      name = "Mod+${toString n}";
       value.action.focus-workspace = n;
     }) (lib.range 1 9)
   );
 
   workspaceMoveBinds = builtins.listToAttrs (
     map (n: {
-      name = "Alt+Shift+${toString n}";
+      name = "Mod+Shift+${toString n}";
       value.action.move-window-to-workspace = n;
     }) (lib.range 1 9)
   );
 
   columnToWorkspaceBinds = builtins.listToAttrs (
     map (n: {
-      name = "Alt+Ctrl+${toString n}";
+      name = "Mod+Ctrl+${toString n}";
       value.action.move-column-to-workspace = n;
     }) (lib.range 1 9)
   );
@@ -192,16 +160,23 @@ in
 
         binds =
           lib.mapAttrs' (suffix: action: {
-            name = "Alt+${suffix}";
+            name = "Mod+${suffix}";
             value.action = action;
           }) binds
           // workspaceFocusBinds
           // workspaceMoveBinds
           // columnToWorkspaceBinds
           // {
+            "Mod+WheelScrollUp" = {
+              action.focus-workspace-up = { };
+              cooldown-ms = 150;
+            };
+            "Mod+WheelScrollDown" = {
+              action.focus-workspace-down = { };
+              cooldown-ms = 150;
+            };
             # Acer Nitro/Predator Sense key (hwdb maps scancode 0xf5 → XF86Launch1)
             "XF86Launch1".action.spawn = [ "DAMX" ];
-            # Media keys
             "XF86AudioRaiseVolume".action.spawn = [
               "wpctl"
               "set-volume"
@@ -243,7 +218,6 @@ in
               "stop"
             ];
 
-            # Compx multimedia / launcher keys
             "XF86Explorer".action.spawn = [ "thunar" ];
             "XF86HomePage".action.spawn = [ "microsoft-edge" ];
 
