@@ -23,15 +23,11 @@ in
 
     boot.loader = {
       systemd-boot.enable = lib.mkForce false;
-      timeout = 1;
       limine = {
         enable = true;
         enableEditor = false;
         secureBoot.enable = true;
         inherit (cfg) maxGenerations;
-        extraConfig = ''
-          quiet: yes
-        '';
         extraEntries = ''
           /Windows Boot Manager
             protocol: efi
