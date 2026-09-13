@@ -57,6 +57,12 @@ let
     "E".spawn = [ "thunar" ];
 
     # Session / help
+    "Shift+Q".spawn = [
+      "noctalia"
+      "msg"
+      "panel-toggle"
+      "session"
+    ];
     "Shift+E".quit = { };
     "Shift+Slash".show-hotkey-overlay = { };
   };
