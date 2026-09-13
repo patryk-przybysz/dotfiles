@@ -15,8 +15,11 @@ in
 
       vencord.settings = {
         plugins = {
-          ClearURLs.enable = true;
-          FixYoutubeEmbeds.enable = true;
+          ClearURLs.enabled = true;
+          FixYoutubeEmbeds.enabled = true;
+          ShowHiddenChannels.enabled = true;
+          VolumeBooster.enabled = true;
+          WebScreenShareFixes.enabled = true;
         };
       };
     };
