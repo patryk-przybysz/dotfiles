@@ -119,14 +119,19 @@ in
   services.udev.extraHwdb = ''
     mouse:usb:v25a7pfa70:name:*:
      MOUSE_DPI=2000@125
-    mouse:usb:v24aep1411:name:*:
-     MOUSE_DPI=2000@125
   '';
 
-  # hub.rapoo.com uses WebHID; hidraw nodes are root-only by default on Linux.
-  services.udev.extraRules = ''
-    SUBSYSTEM=="hidraw", ATTRS{idVendor}=="24ae", TAG+="uaccess"
-  '';
+  # hub.rapoo.com WebHID
+  services.udev.packages = [
+    (pkgs.writeTextFile {
+      name = "rapoo-hidraw-rules";
+      destination = "/etc/udev/rules.d/70-rapoo-hidraw.rules";
+      text = ''
+        ACTION!="remove", SUBSYSTEM=="hidraw", KERNEL=="hidraw*", \
+          ATTRS{idVendor}=="24ae", MODE="0660", TAG+="uaccess"
+      '';
+    })
+  ];
 
   # https://its-saanvi.github.io/linux-mcsr/drag-clicking.html
   environment.etc."libinput/local-overrides.quirks".text = ''
