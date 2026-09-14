@@ -181,6 +181,14 @@ in
               action.focus-workspace-down = { };
               cooldown-ms = 150;
             };
+            "Mod+Ctrl+WheelScrollUp" = {
+              action.focus-column-left = { };
+              cooldown-ms = 150;
+            };
+            "Mod+Ctrl+WheelScrollDown" = {
+              action.focus-column-right = { };
+              cooldown-ms = 150;
+            };
             # Acer Nitro/Predator Sense key (hwdb maps scancode 0xf5 → XF86Launch1)
             "XF86Launch1".action.spawn = [ "DAMX" ];
             "XF86AudioRaiseVolume".action.spawn = [
