@@ -160,6 +160,7 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
+      "gamemode"
     ];
   };
 
