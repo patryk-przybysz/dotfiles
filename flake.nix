@@ -4,17 +4,28 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    blueprint.url = "github:numtide/blueprint";
-    blueprint.inputs.nixpkgs.follows = "nixpkgs";
+    systems.url = "github:nix-systems/default";
+
+    blueprint = {
+      url = "github:numtide/blueprint";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+    };
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    system-manager.url = "github:numtide/system-manager";
-    system-manager.inputs.nixpkgs.follows = "nixpkgs";
+    system-manager = {
+      url = "github:numtide/system-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.userborn.inputs.systems.follows = "systems";
+    };
 
-    gen-luarc.url = "github:mrcjkb/nix-gen-luarc-json";
-    gen-luarc.inputs.nixpkgs.follows = "nixpkgs";
+    gen-luarc = {
+      url = "github:mrcjkb/nix-gen-luarc-json";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.git-hooks.follows = "git-hooks";
+    };
 
     treefmt.url = "github:numtide/treefmt-nix";
     treefmt.inputs.nixpkgs.follows = "nixpkgs";
@@ -22,11 +33,20 @@
     git-hooks.url = "github:cachix/git-hooks.nix";
     git-hooks.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-minecraft.url = "github:Infinidoge/nix-minecraft";
-    nix-minecraft.inputs.nixpkgs.follows = "nixpkgs";
+    nix-minecraft = {
+      url = "github:Infinidoge/nix-minecraft";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+    };
 
-    sem.url = "github:Ataraxy-Labs/sem";
-    sem.inputs.nixpkgs.follows = "nixpkgs";
+    sem = {
+      url = "github:Ataraxy-Labs/sem";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
+        flake-utils.inputs.systems.follows = "systems";
+      };
+    };
 
     noctalia.url = "github:noctalia-dev/noctalia";
     noctalia.inputs.nixpkgs.follows = "nixpkgs";
