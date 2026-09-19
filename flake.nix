@@ -78,6 +78,7 @@
         overlays = [
           inputs.gen-luarc.overlays.default
           (import ./modules/home/neovim/overlay.nix { inherit inputs; })
+          (import ./modules/home/niri/overlay.nix)
         ];
       };
     };
