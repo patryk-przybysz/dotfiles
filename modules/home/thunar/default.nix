@@ -40,7 +40,7 @@ in
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        "inode/directory" = "thunar.desktop";
+        "inode/directory" = lib.mkDefault "thunar.desktop";
       };
     };
 

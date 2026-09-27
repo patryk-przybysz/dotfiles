@@ -19,6 +19,10 @@ in
     gaming.enable = true;
     nvidia.enable = true;
     damx.enable = true;
+    niri.enable = true;
+    obs.enable = true;
+    alacritty.enable = true;
+    nautilus.enable = true;
     # https://its-saanvi.github.io/linux-mcsr/tmpfs.html
     # https://github.com/flammablebunny/flake
     mcsr.tmpfs = {
@@ -107,26 +111,6 @@ in
         support32Bit = true;
       };
       pulse.enable = true;
-    };
-    gvfs.enable = true;
-  };
-
-  # Nautilus extensions load from the system session, not Home Manager.
-  # alacritty is installed in the user profile and is on the extension's list.
-  programs = {
-    niri.enable = true;
-    nautilus-open-any-terminal = {
-      enable = true;
-      terminal = "alacritty";
-    };
-    obs-studio = {
-      enable = true;
-      package = pkgs.obs-studio.override {
-        cudaSupport = true;
-      };
-      plugins = with pkgs.obs-studio-plugins; [
-        obs-pipewire-audio-capture
-      ];
     };
   };
 

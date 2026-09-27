@@ -54,7 +54,10 @@ let
     ];
     "X".spawn = [ "alacritty" ];
     "B".spawn = [ "microsoft-edge" ];
-    "E".spawn = [ "nautilus" ];
+    "E".spawn = [
+      "xdg-open"
+      config.home.homeDirectory
+    ];
 
     # Session / help
     "Shift+Q".spawn = [
@@ -232,7 +235,10 @@ in
               "stop"
             ];
 
-            "XF86Explorer".action.spawn = [ "nautilus" ];
+            "XF86Explorer".action.spawn = [
+              "xdg-open"
+              config.home.homeDirectory
+            ];
             "XF86HomePage".action.spawn = [ "microsoft-edge" ];
 
             "Print".action.screenshot = { };

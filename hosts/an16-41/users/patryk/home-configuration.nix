@@ -25,21 +25,14 @@
     vesktop.enable = true;
     niri.enable = true;
     noctalia.enable = true;
-    thunar.enable = true;
+    # thunar.enable = true;
     nautilus.enable = true;
-  };
-
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      font.normal.family = "CommitMono Nerd Font";
-    };
+    alacritty.enable = true;
   };
 
   home = {
     packages = [
       pkgs.spotify
-      pkgs.unrar
     ];
     stateVersion = "26.05";
     language.base = "en_US.UTF-8";
