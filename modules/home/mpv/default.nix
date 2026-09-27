@@ -62,7 +62,6 @@ in
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        # mkDefault so Haruna can take video files when both are enabled.
         "video/mp4" = lib.mkDefault "mpv.desktop";
         "video/x-matroska" = lib.mkDefault "mpv.desktop";
         "video/webm" = lib.mkDefault "mpv.desktop";

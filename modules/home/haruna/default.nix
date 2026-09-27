@@ -7,21 +7,32 @@
 let
   cfg = config.my.home.haruna;
   desktop = "org.kde.haruna.desktop";
+
+  # Open URL calls QStandardPaths::findExecutable("yt-dlp"). nixpkgs rewrites a
+  # different string in application.cpp, so the baked path is never consulted.
+  haruna = pkgs.symlinkJoin {
+    name = "haruna-with-yt-dlp";
+    paths = [ pkgs.haruna ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram "$out/bin/haruna" \
+        --prefix PATH : ${lib.makeBinPath [ pkgs.yt-dlp ]}
+    '';
+  };
 in
 {
   options.my.home.haruna.enable = lib.mkEnableOption "Haruna video player (libmpv)";
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.haruna ];
+    home.packages = [ haruna ];
 
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        # Higher priority than mpv's mkDefault, so video files open here.
-        "video/mp4" = desktop;
-        "video/x-matroska" = desktop;
-        "video/webm" = desktop;
-        "video/quicktime" = desktop;
+        "video/mp4" = lib.mkDefault desktop;
+        "video/x-matroska" = lib.mkDefault desktop;
+        "video/webm" = lib.mkDefault desktop;
+        "video/quicktime" = lib.mkDefault desktop;
       };
     };
   };
