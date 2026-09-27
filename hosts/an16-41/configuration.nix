@@ -108,9 +108,27 @@ in
       };
       pulse.enable = true;
     };
+    gvfs.enable = true;
   };
 
-  programs.niri.enable = true;
+  # Nautilus extensions load from the system session, not Home Manager.
+  # alacritty is installed in the user profile and is on the extension's list.
+  programs = {
+    niri.enable = true;
+    nautilus-open-any-terminal = {
+      enable = true;
+      terminal = "alacritty";
+    };
+    obs-studio = {
+      enable = true;
+      package = pkgs.obs-studio.override {
+        cudaSupport = true;
+      };
+      plugins = with pkgs.obs-studio-plugins; [
+        obs-pipewire-audio-capture
+      ];
+    };
+  };
 
   home-manager.backupFileExtension = "hm-bak";
 
@@ -153,16 +171,6 @@ in
   console.keyMap = "pl2";
 
   security.rtkit.enable = true;
-
-  programs.obs-studio = {
-    enable = true;
-    package = pkgs.obs-studio.override {
-      cudaSupport = true;
-    };
-    plugins = with pkgs.obs-studio-plugins; [
-      obs-pipewire-audio-capture
-    ];
-  };
 
   users.users.patryk = {
     isNormalUser = true;

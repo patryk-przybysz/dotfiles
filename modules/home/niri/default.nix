@@ -54,7 +54,7 @@ let
     ];
     "X".spawn = [ "alacritty" ];
     "B".spawn = [ "microsoft-edge" ];
-    "E".spawn = [ "thunar" ];
+    "E".spawn = [ "nautilus" ];
 
     # Session / help
     "Shift+Q".spawn = [
@@ -232,7 +232,7 @@ in
               "stop"
             ];
 
-            "XF86Explorer".action.spawn = [ "thunar" ];
+            "XF86Explorer".action.spawn = [ "nautilus" ];
             "XF86HomePage".action.spawn = [ "microsoft-edge" ];
 
             "Print".action.screenshot = { };

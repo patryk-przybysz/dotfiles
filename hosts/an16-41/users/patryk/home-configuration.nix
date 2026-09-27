@@ -26,6 +26,7 @@
     niri.enable = true;
     noctalia.enable = true;
     thunar.enable = true;
+    nautilus.enable = true;
   };
 
   programs.alacritty = {
