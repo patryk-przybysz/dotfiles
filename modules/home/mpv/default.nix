@@ -62,10 +62,10 @@ in
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        "video/mp4" = "mpv.desktop";
-        "video/x-matroska" = "mpv.desktop";
-        "video/webm" = "mpv.desktop";
-        "video/quicktime" = "mpv.desktop";
+        "video/mp4" = lib.mkDefault "mpv.desktop";
+        "video/x-matroska" = lib.mkDefault "mpv.desktop";
+        "video/webm" = lib.mkDefault "mpv.desktop";
+        "video/quicktime" = lib.mkDefault "mpv.desktop";
         "audio/mpeg" = "mpv.desktop";
         "audio/flac" = "mpv.desktop";
         "audio/ogg" = "mpv.desktop";
