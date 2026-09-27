@@ -121,9 +121,9 @@ in
      MOUSE_DPI=2000@125
   '';
 
-  # WebHID: seat-user ACL on hidraw, installed before 73-seat-late.
-  # 24ae is the Rapoo receiver (hub.rapoo.com). 258a interface 01 is the
-  # RK configuration endpoint; the boot keyboard interface stays root-only.
+  # WebHID hidraw ACL, installed before 73-seat-late.
+  # Rapoo is 24ae. RK uses ENV because the vendor and interface are different parents.
+  # Interface 01 is the configuration endpoint; the boot keyboard stays root-only.
   services.udev.packages = [
     (pkgs.writeTextFile {
       name = "rapoo-hidraw-rules";
@@ -138,7 +138,7 @@ in
       destination = "/etc/udev/rules.d/70-rk-hidraw.rules";
       text = ''
         ACTION!="remove", SUBSYSTEM=="hidraw", KERNEL=="hidraw*", \
-          ATTRS{idVendor}=="258a", ATTRS{bInterfaceNumber}=="01", MODE="0660", TAG+="uaccess"
+          ENV{ID_VENDOR_ID}=="258a", ENV{ID_USB_INTERFACE_NUM}=="01", MODE="0660", TAG+="uaccess"
       '';
     })
   ];
