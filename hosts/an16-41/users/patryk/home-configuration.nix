@@ -21,6 +21,7 @@
     gaming.enable = true;
     mcsr.enable = true;
     mpv.enable = true;
+    haruna.enable = true;
     js.enable = true;
     vesktop.enable = true;
     niri.enable = true;
