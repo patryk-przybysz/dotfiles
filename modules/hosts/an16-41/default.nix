@@ -7,7 +7,7 @@
       nvidia
       damx
       niri
-      nautilus
+      thunar
       alacritty
       noctalia
     ];
