@@ -27,13 +27,13 @@ Upstream docs: [mcsr-nixos waywall guide](https://git.uku3lig.net/uku/mcsr-nixos
 Instead:
 
 1. Edit files in this directory
-2. `nh home switch` (or `home-manager switch`)
+2. `nh os switch`
 3. Relaunch waywall / MC
 
 `default.nix` deploys sibling Lua files via `home.file`; only `init.lua` is inlined by mcsr-nixos.
 
 ## NVIDIA
 
-Prism Launcher is wrapped with `__GL_THREADED_OPTIMIZATIONS=0` on the game process (see `modules/home/mcsr/default.nix`). Required for GLFW 65544 / preemptive mode on NVIDIA — see [waywall NVIDIA setup](https://tesselslate.github.io/waywall/00_setup.html#nvidia).
+Prism Launcher is wrapped with `__GL_THREADED_OPTIMIZATIONS=0` on the game process (see `modules/features/mcsr/default.nix`). Required for GLFW 65544 / preemptive mode on NVIDIA — see [waywall NVIDIA setup](https://tesselslate.github.io/waywall/00_setup.html#nvidia).
 
 Ninjabrain-bot uses a Metal LAF override to avoid blank Swing windows on NixOS — see [NixOS blank Swing window](https://tesselslate.github.io/waywall/01_ninb.html).
