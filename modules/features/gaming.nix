@@ -12,11 +12,6 @@
         # 32-bit graphics for older Proton titles (steam.enable pulls this in too)
         hardware.graphics.enable32Bit = true;
 
-        # Let Steam see GE-Proton builds installed by protonup
-        environment.sessionVariables.STEAM_EXTRA_COMPAT_TOOLS_PATHS = [
-          "/home/patryk/.steam/root/compatibilitytools.d"
-        ];
-
         # NOTE: ntfs3g must not be installed here — its mount.ntfs helper shadows
         # the in-kernel ntfs driver (kernel 7.1+) for `ntfs` fstab entries.
         environment.systemPackages = with pkgs; [
@@ -25,10 +20,12 @@
         ];
       };
 
+    # protonup installs GE-Proton into that user's Steam directory.
     homeManager =
-      { pkgs, ... }:
+      { config, pkgs, ... }:
       {
         home.packages = [ pkgs.faugus-launcher ];
+        home.sessionVariables.STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${config.home.homeDirectory}/.steam/root/compatibilitytools.d";
       };
   };
 }

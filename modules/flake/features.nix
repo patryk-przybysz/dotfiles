@@ -9,6 +9,9 @@ let
   inherit (lib) types mkOption;
   inherit (config) features;
 
+  # New homes. An existing home pins its own; changing it later rewrites stateful defaults.
+  defaultHomeStateVersion = "26.11";
+
   # Features, machines, users on a machine and standalone homes all share this shape.
   shape = id: {
     options = {
@@ -139,7 +142,11 @@ in
             useGlobalPkgs = lib.mkDefault true;
             useUserPackages = lib.mkDefault true;
             users = lib.genAttrs users (user: {
-              imports = halves "homeManager" ([ host ] ++ userRoots user);
+              imports = halves "homeManager" ([ host ] ++ userRoots user) ++ [
+                {
+                  home.stateVersion = lib.mkDefault defaultHomeStateVersion;
+                }
+              ];
             });
           };
         };
@@ -155,8 +162,11 @@ in
         pkgs = pkgsFor home.system;
         modules = halves "homeManager" (everywhere user ++ [ home ]) ++ [
           {
-            home.username = lib.mkDefault user;
-            home.homeDirectory = lib.mkDefault "/home/${user}";
+            home = {
+              username = lib.mkDefault user;
+              homeDirectory = lib.mkDefault "/home/${user}";
+              stateVersion = lib.mkDefault defaultHomeStateVersion;
+            };
           }
         ];
       }
