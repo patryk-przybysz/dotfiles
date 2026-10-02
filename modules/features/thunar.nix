@@ -36,11 +36,39 @@
     homeManager =
       { lib, pkgs, ... }:
       let
-        catppuccinGtk = pkgs.catppuccin-gtk.override {
-          variant = "mocha";
-          accents = [ "mauve" ];
-        };
-        gtkTheme = "catppuccin-mocha-mauve-standard";
+        # adw-gtk3 is the GTK3 port of libadwaita. These named colors are how that
+        # theme, and libadwaita itself, take a palette. Mocha + mauve matches Noctalia.
+        catppuccinAdwColors = ''
+          @define-color accent_color #cba6f7;
+          @define-color accent_bg_color #cba6f7;
+          @define-color accent_fg_color #11111b;
+          @define-color destructive_bg_color #f38ba8;
+          @define-color destructive_fg_color #11111b;
+          @define-color success_bg_color #a6e3a1;
+          @define-color success_fg_color #11111b;
+          @define-color warning_bg_color #f9e2af;
+          @define-color warning_fg_color #11111b;
+          @define-color error_bg_color #f38ba8;
+          @define-color error_fg_color #11111b;
+          @define-color window_bg_color #1e1e2e;
+          @define-color window_fg_color #cdd6f4;
+          @define-color view_bg_color #11111b;
+          @define-color view_fg_color #cdd6f4;
+          @define-color headerbar_bg_color #181825;
+          @define-color headerbar_fg_color #cdd6f4;
+          @define-color headerbar_border_color #11111b;
+          @define-color headerbar_backdrop_color #11111b;
+          @define-color card_bg_color #313244;
+          @define-color card_fg_color #cdd6f4;
+          @define-color popover_bg_color #313244;
+          @define-color popover_fg_color #cdd6f4;
+          @define-color dialog_bg_color #1e1e2e;
+          @define-color dialog_fg_color #cdd6f4;
+          @define-color sidebar_bg_color #181825;
+          @define-color sidebar_fg_color #cdd6f4;
+          @define-color sidebar_backdrop_color #11111b;
+          @define-color sidebar_border_color #11111b;
+        '';
 
         # Whatever file-roller's desktop file claims, so Extract Here does not
         # stop to ask which archive manager to use.
@@ -118,22 +146,18 @@
       {
         gtk = {
           enable = true;
+          colorScheme = "dark";
+          # GTK3 only. GTK4 apps (File Roller, the portal) use libadwaita directly.
           theme = {
-            name = gtkTheme;
-            package = catppuccinGtk;
+            name = "adw-gtk3-dark";
+            package = pkgs.adw-gtk3;
           };
-          gtk3.extraConfig = {
-            gtk-application-prefer-dark-theme = true;
+          iconTheme = {
+            name = "MoreWaita";
+            package = pkgs.morewaita-icon-theme;
           };
-          gtk4 = {
-            theme = {
-              name = gtkTheme;
-              package = catppuccinGtk;
-            };
-            extraConfig = {
-              gtk-application-prefer-dark-theme = true;
-            };
-          };
+          gtk3.extraCss = catppuccinAdwColors;
+          gtk4.extraCss = catppuccinAdwColors;
         };
 
         xdg.mimeApps = {
@@ -144,7 +168,13 @@
           // lib.genAttrs archiveMimeTypes (_: lib.mkDefault "org.gnome.FileRoller.desktop");
         };
 
-        xfconf.settings.thunar."misc-volume-management" = true;
+        xfconf.settings.thunar = {
+          "misc-volume-management" = true;
+          # The File/Edit/View bar is the old chrome. The toolbar menu button remains.
+          "last-menubar-visible" = false;
+          "last-location-bar" = "ThunarLocationButtons";
+          "misc-small-toolbar-icons" = true;
+        };
 
         xdg.configFile."Thunar/uca.xml".text = ''
           <?xml version="1.0" encoding="UTF-8"?>
@@ -153,7 +183,7 @@
           	<icon>utilities-terminal</icon>
           	<name>Open Terminal Here</name>
           	<unique-id>1740000000000000-1</unique-id>
-          	<command>alacritty --working-directory "%f"</command>
+          	<command>alacritty --working-directory %f</command>
           	<description>Open Alacritty in this folder</description>
           	<patterns>*</patterns>
           	<startup-notify/>
