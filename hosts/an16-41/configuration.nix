@@ -36,7 +36,12 @@ in
     };
   };
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    loader.efi.canTouchEfiVariables = true;
+    # Lets this laptop evaluate and build oci-a1.
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
+  };
 
   fileSystems."/media/games" = {
     device = "/dev/disk/by-uuid/D0C0A2DCC0A2C854";
@@ -59,8 +64,6 @@ in
       "nofail"
     ];
   };
-
-  boot.loader.efi.canTouchEfiVariables = true;
 
   hardware.bluetooth = {
     enable = true;
