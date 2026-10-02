@@ -1,16 +1,5 @@
 {
-  config,
-  lib,
-  ...
-}:
-let
-  cfg = config.my.nixos.nix;
-in
-{
-  options.my.nixos.nix.enable =
-    lib.mkEnableOption "shared Nix daemon settings (GC, optimisation, substituters)";
-
-  config = lib.mkIf cfg.enable {
+  features.nix.nixos = {
     nix = {
       optimise.automatic = true;
 

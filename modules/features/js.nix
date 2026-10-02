@@ -1,20 +1,11 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  cfg = config.my.home.js;
-in
-{
-  options.my.home.js.enable = lib.mkEnableOption "JavaScript toolchain (node, bun, pnpm)";
+  features.js.homeManager =
+    { pkgs, ... }:
+    {
+      home.packages = [ pkgs.nodejs_26 ];
 
-  config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.nodejs_26 ];
+      programs.bun.enable = true;
 
-    programs.bun.enable = true;
-
-    home.sessionPath = [ "$HOME/.bun/bin" ];
-  };
+      home.sessionPath = [ "$HOME/.bun/bin" ];
+    };
 }

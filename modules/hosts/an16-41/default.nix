@@ -1,173 +1,209 @@
+{ config, ... }:
 {
-  inputs,
-  pkgs,
-  config,
-  ...
-}:
-let
-  catppuccinSddm = pkgs.catppuccin-sddm.override {
-    flavor = "mocha";
-    accent = "mauve";
-  };
-in
-{
-  imports = [ ./hardware-configuration.nix ] ++ builtins.attrValues inputs.self.nixosModules;
-
-  my.nixos = {
-    nix.enable = true;
-    limine.enable = true;
-    gaming.enable = true;
-    nvidia.enable = true;
-    damx.enable = true;
-    niri.enable = true;
-    obs.enable = true;
-    alacritty.enable = true;
-    nautilus.enable = true;
-    # https://its-saanvi.github.io/linux-mcsr/tmpfs.html
-    # https://github.com/flammablebunny/flake
-    mcsr.tmpfs = {
-      enable = true;
-      size = "4G";
-      keepWorlds = 1000;
-      instances = {
-        RSG.savesPath = "/home/patryk/.local/share/PrismLauncher/instances/1.16.1 RSG/minecraft/saves";
-        Ranked.savesPath = "/home/patryk/.local/share/PrismLauncher/instances/1.16.1 Ranked/minecraft/saves";
-      };
-    };
-  };
-
-  boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
-    loader.efi.canTouchEfiVariables = true;
-    # Lets this laptop evaluate and build oci-a1.
-    binfmt.emulatedSystems = [ "aarch64-linux" ];
-  };
-
-  fileSystems."/media/games" = {
-    device = "/dev/disk/by-uuid/D0C0A2DCC0A2C854";
-    fsType = "ntfs";
-    options = [
-      "uid=1000"
-      "gid=100"
-      "nofail"
-      "rw"
-      "exec"
-      "umask=000"
+  hosts.an16-41 = {
+    includes = with config.features; [
+      nix
+      limine
+      nvidia
+      damx
+      niri
+      nautilus
+      alacritty
+      noctalia
     ];
-  };
 
-  fileSystems."/media/games/SteamLibrary/steamapps/compatdata" = {
-    device = "/home/patryk/.steam/steam/steamapps/compatdata-games";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-    ];
-  };
+    nixos =
+      { config, pkgs, ... }:
+      let
+        catppuccinSddm = pkgs.catppuccin-sddm.override {
+          flavor = "mocha";
+          accent = "mauve";
+        };
+      in
+      {
+        imports = [ ./_hardware-configuration.nix ];
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
+        boot = {
+          kernelPackages = pkgs.linuxPackages_latest;
+          loader.efi.canTouchEfiVariables = true;
+          # Lets this laptop evaluate and build oci-a1.
+          binfmt.emulatedSystems = [ "aarch64-linux" ];
+        };
 
-  networking = {
-    hostName = "an16-41";
-    networkmanager.enable = true;
-  };
+        fileSystems."/media/games" = {
+          device = "/dev/disk/by-uuid/D0C0A2DCC0A2C854";
+          fsType = "ntfs";
+          options = [
+            "uid=1000"
+            "gid=100"
+            "nofail"
+            "rw"
+            "exec"
+            "umask=000"
+          ];
+        };
 
-  system.nixos.tags = [ config.networking.hostName ];
+        fileSystems."/media/games/SteamLibrary/steamapps/compatdata" = {
+          device = "/home/patryk/.steam/steam/steamapps/compatdata-games";
+          fsType = "none";
+          options = [
+            "bind"
+            "nofail"
+          ];
+        };
 
-  time.timeZone = "Europe/Warsaw";
+        hardware.bluetooth = {
+          enable = true;
+          powerOnBoot = true;
+        };
 
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    extraLocaleSettings = {
-      LC_ADDRESS = "en_US.UTF-8";
-      LC_IDENTIFICATION = "en_US.UTF-8";
-      LC_MEASUREMENT = "en_US.UTF-8";
-      LC_MONETARY = "en_US.UTF-8";
-      LC_NAME = "en_US.UTF-8";
-      LC_NUMERIC = "en_US.UTF-8";
-      LC_PAPER = "en_US.UTF-8";
-      LC_TELEPHONE = "en_US.UTF-8";
-      LC_TIME = "en_US.UTF-8";
-    };
-  };
+        networking = {
+          hostName = "an16-41";
+          networkmanager.enable = true;
+        };
 
-  services = {
-    upower.enable = true;
-    xserver = {
-      enable = true;
-      xkb.layout = "pl";
-    };
-    displayManager = {
-      defaultSession = "niri";
-      sddm = {
-        enable = true;
-        theme = "${catppuccinSddm}/share/sddm/themes/catppuccin-mocha-mauve";
+        system.nixos.tags = [ config.networking.hostName ];
+
+        time.timeZone = "Europe/Warsaw";
+
+        i18n = {
+          defaultLocale = "en_US.UTF-8";
+          extraLocaleSettings = {
+            LC_ADDRESS = "en_US.UTF-8";
+            LC_IDENTIFICATION = "en_US.UTF-8";
+            LC_MEASUREMENT = "en_US.UTF-8";
+            LC_MONETARY = "en_US.UTF-8";
+            LC_NAME = "en_US.UTF-8";
+            LC_NUMERIC = "en_US.UTF-8";
+            LC_PAPER = "en_US.UTF-8";
+            LC_TELEPHONE = "en_US.UTF-8";
+            LC_TIME = "en_US.UTF-8";
+          };
+        };
+
+        services = {
+          upower.enable = true;
+          xserver = {
+            enable = true;
+            xkb.layout = "pl";
+          };
+          displayManager = {
+            defaultSession = "niri";
+            sddm = {
+              enable = true;
+              theme = "${catppuccinSddm}/share/sddm/themes/catppuccin-mocha-mauve";
+            };
+          };
+          pipewire = {
+            enable = true;
+            alsa = {
+              enable = true;
+              support32Bit = true;
+            };
+            pulse.enable = true;
+          };
+        };
+
+        home-manager.backupFileExtension = "hm-bak";
+
+        # Compx 2.4G wireless mouse: libinput can't detect its real DPI and assumes
+        # 800, making everything ~2.5x too fast at the hardware's 2000 DPI.
+        services.udev.extraHwdb = ''
+          mouse:usb:v25a7pfa70:name:*:
+           MOUSE_DPI=2000@125
+        '';
+
+        # WebHID hidraw ACL, installed before 73-seat-late.
+        # Rapoo is 24ae. RK uses ENV because the vendor and interface are different parents.
+        # Interface 01 is the configuration endpoint; the boot keyboard stays root-only.
+        services.udev.packages = [
+          (pkgs.writeTextFile {
+            name = "rapoo-hidraw-rules";
+            destination = "/etc/udev/rules.d/70-rapoo-hidraw.rules";
+            text = ''
+              ACTION!="remove", SUBSYSTEM=="hidraw", KERNEL=="hidraw*", \
+                ATTRS{idVendor}=="24ae", MODE="0660", TAG+="uaccess"
+            '';
+          })
+          (pkgs.writeTextFile {
+            name = "rk-hidraw-rules";
+            destination = "/etc/udev/rules.d/70-rk-hidraw.rules";
+            text = ''
+              ACTION!="remove", SUBSYSTEM=="hidraw", KERNEL=="hidraw*", \
+                ENV{ID_VENDOR_ID}=="258a", ENV{ID_USB_INTERFACE_NUM}=="01", MODE="0660", TAG+="uaccess"
+            '';
+          })
+        ];
+
+        # https://its-saanvi.github.io/linux-mcsr/drag-clicking.html
+        environment.etc."libinput/local-overrides.quirks".text = ''
+          [Never Debounce]
+          MatchUdevType=mouse
+          ModelBouncingKeys=1
+        '';
+
+        console.keyMap = "pl2";
+
+        security.rtkit.enable = true;
+
+        users.users.patryk = {
+          isNormalUser = true;
+          description = "Patryk Przybysz";
+          extraGroups = [
+            "networkmanager"
+            "wheel"
+            "gamemode"
+          ];
+        };
+
+        system.stateVersion = "26.05";
       };
-    };
-    pipewire = {
-      enable = true;
-      alsa = {
-        enable = true;
-        support32Bit = true;
+
+    users.patryk = {
+      includes = with config.features; [
+        gaming
+        mcsr
+        obs
+        haruna
+        vesktop
+      ];
+
+      # https://its-saanvi.github.io/linux-mcsr/tmpfs.html
+      # https://github.com/flammablebunny/flake
+      nixos.my.nixos.mcsr.tmpfs = {
+        size = "4G";
+        keepWorlds = 1000;
+        instances = {
+          RSG.savesPath = "/home/patryk/.local/share/PrismLauncher/instances/1.16.1 RSG/minecraft/saves";
+          Ranked.savesPath = "/home/patryk/.local/share/PrismLauncher/instances/1.16.1 Ranked/minecraft/saves";
+        };
       };
-      pulse.enable = true;
+
+      homeManager =
+        { pkgs, ... }:
+        {
+          my.home.nix-tools = {
+            osHost = "an16-41";
+            generationLabels.enable = true;
+          };
+
+          home = {
+            packages = [
+              pkgs.spotify
+            ];
+            stateVersion = "26.05";
+            language.base = "en_US.UTF-8";
+          };
+
+          programs.microsoft-edge = {
+            enable = true;
+            extensions = [
+              "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
+              "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
+              "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock
+            ];
+          };
+        };
     };
   };
-
-  home-manager.backupFileExtension = "hm-bak";
-
-  # Compx 2.4G wireless mouse: libinput can't detect its real DPI and assumes
-  # 800, making everything ~2.5x too fast at the hardware's 2000 DPI.
-  services.udev.extraHwdb = ''
-    mouse:usb:v25a7pfa70:name:*:
-     MOUSE_DPI=2000@125
-  '';
-
-  # WebHID hidraw ACL, installed before 73-seat-late.
-  # Rapoo is 24ae. RK uses ENV because the vendor and interface are different parents.
-  # Interface 01 is the configuration endpoint; the boot keyboard stays root-only.
-  services.udev.packages = [
-    (pkgs.writeTextFile {
-      name = "rapoo-hidraw-rules";
-      destination = "/etc/udev/rules.d/70-rapoo-hidraw.rules";
-      text = ''
-        ACTION!="remove", SUBSYSTEM=="hidraw", KERNEL=="hidraw*", \
-          ATTRS{idVendor}=="24ae", MODE="0660", TAG+="uaccess"
-      '';
-    })
-    (pkgs.writeTextFile {
-      name = "rk-hidraw-rules";
-      destination = "/etc/udev/rules.d/70-rk-hidraw.rules";
-      text = ''
-        ACTION!="remove", SUBSYSTEM=="hidraw", KERNEL=="hidraw*", \
-          ENV{ID_VENDOR_ID}=="258a", ENV{ID_USB_INTERFACE_NUM}=="01", MODE="0660", TAG+="uaccess"
-      '';
-    })
-  ];
-
-  # https://its-saanvi.github.io/linux-mcsr/drag-clicking.html
-  environment.etc."libinput/local-overrides.quirks".text = ''
-    [Never Debounce]
-    MatchUdevType=mouse
-    ModelBouncingKeys=1
-  '';
-
-  console.keyMap = "pl2";
-
-  security.rtkit.enable = true;
-
-  users.users.patryk = {
-    isNormalUser = true;
-    description = "Patryk Przybysz";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "gamemode"
-    ];
-  };
-
-  system.stateVersion = "26.05";
 }

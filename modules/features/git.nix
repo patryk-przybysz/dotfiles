@@ -1,15 +1,5 @@
 {
-  config,
-  lib,
-  ...
-}:
-let
-  cfg = config.my.home.git;
-in
-{
-  options.my.home.git.enable = lib.mkEnableOption "git";
-
-  config = lib.mkIf cfg.enable {
+  features.git.homeManager = {
     programs.git = {
       enable = true;
       settings = {

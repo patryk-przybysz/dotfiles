@@ -1,6 +1,16 @@
-_: {
-  projectRootFile = "flake.nix";
+{ inputs, ... }:
+{
+  imports = [ inputs.treefmt.flakeModule ];
 
-  programs.nixfmt.enable = true;
-  programs.stylua.enable = true;
+  flake-file.inputs.treefmt = {
+    url = "github:numtide/treefmt-nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
+  perSystem.treefmt = {
+    projectRootFile = "flake.nix";
+
+    programs.nixfmt.enable = true;
+    programs.stylua.enable = true;
+  };
 }

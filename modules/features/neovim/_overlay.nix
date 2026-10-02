@@ -6,7 +6,7 @@ let
 
   pkgs-locked = inputs.nixpkgs.legacyPackages.${prev.system};
 
-  mkNeovim = pkgs.callPackage ./mkNeovim.nix {
+  mkNeovim = pkgs.callPackage ./_mkNeovim.nix {
     inherit (pkgs-locked) wrapNeovimUnstable neovimUtils;
   };
 

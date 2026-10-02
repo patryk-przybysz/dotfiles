@@ -1,23 +1,19 @@
+{ inputs, ... }:
 {
-  inputs,
-  pkgs,
-  system,
-  ...
-}:
-let
-  treefmtEval = inputs.treefmt.lib.evalModule pkgs ../treefmt.nix;
-in
-inputs.git-hooks.lib.${system}.run {
-  src = inputs.self;
-  hooks = {
+  imports = [ inputs.git-hooks.flakeModule ];
+
+  flake-file.inputs.git-hooks = {
+    url = "github:cachix/git-hooks.nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
+  # treefmt's package comes from the formatting module.
+  perSystem.pre-commit.settings.hooks = {
     nil.enable = true;
     statix = {
       enable = true;
       excludes = [ "hardware-configuration\\.nix$" ];
     };
-    treefmt = {
-      enable = true;
-      package = treefmtEval.config.build.wrapper;
-    };
+    treefmt.enable = true;
   };
 }
