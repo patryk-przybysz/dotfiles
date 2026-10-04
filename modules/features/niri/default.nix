@@ -63,7 +63,7 @@
           "X".spawn = [ "alacritty" ];
           "B".spawn = [ "microsoft-edge" ];
           "E".spawn = [
-            "xdg-open"
+            "thunar"
             config.home.homeDirectory
           ];
 
@@ -237,7 +237,7 @@
               ];
 
               "XF86Explorer".action.spawn = [
-                "xdg-open"
+                "thunar"
                 config.home.homeDirectory
               ];
               "XF86HomePage".action.spawn = [ "microsoft-edge" ];

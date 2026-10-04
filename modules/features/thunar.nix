@@ -15,6 +15,13 @@
           ];
         };
 
+        systemd.user.services.thunar = {
+          wantedBy = [ "graphical-session.target" ];
+          partOf = [ "graphical-session.target" ];
+          after = [ "graphical-session.target" ];
+          enableDefaultPath = false;
+        };
+
         # Trash, MTP, network mounts, and the volume monitor. Also turns on udisks2.
         services.gvfs.enable = true;
 
