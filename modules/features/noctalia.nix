@@ -1,9 +1,6 @@
 { inputs, ... }:
 {
-  flake-file.inputs.noctalia = {
-    url = "github:noctalia-dev/noctalia";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
+  flake-file.inputs.noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
   features.noctalia.homeManager =
     { config, pkgs, ... }:

@@ -5,8 +5,6 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  nixpkgs.overlays = [ (import ./_overlay.nix) ];
-
   features.niri = {
     nixos.programs.niri.enable = true;
 
