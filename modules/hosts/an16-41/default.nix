@@ -162,6 +162,7 @@
     users.patryk = {
       includes = with config.features; [
         gaming
+        gpu-screen-recorder
         mcsr
         obs
         haruna
