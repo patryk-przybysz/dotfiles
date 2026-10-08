@@ -153,6 +153,7 @@
         mcsr
         obs
         haruna
+        qimgv
         vesktop
       ];
 
