@@ -13,7 +13,7 @@
     ];
 
     nixos =
-      { config, pkgs, ... }:
+      { pkgs, ... }:
       let
         catppuccinSddm = pkgs.catppuccin-sddm.override {
           flavor = "mocha";
@@ -61,8 +61,6 @@
           hostName = "an16-41";
           networkmanager.enable = true;
         };
-
-        system.nixos.tags = [ config.networking.hostName ];
 
         time.timeZone = "Europe/Warsaw";
 
@@ -171,11 +169,6 @@
       homeManager =
         { pkgs, ... }:
         {
-          my.home.nix-tools = {
-            osHost = "an16-41";
-            generationLabels.enable = true;
-          };
-
           home = {
             packages = [
               pkgs.spotify
