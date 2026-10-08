@@ -6,5 +6,10 @@
         font.normal.family = "CommitMono Nerd Font";
       };
     };
+
+    xdg.terminal-exec = {
+      enable = true;
+      settings.default = [ "Alacritty.desktop" ];
+    };
   };
 }
