@@ -68,6 +68,7 @@
             font_family = "CommitMono Nerd Font";
             clipboard_enabled = true;
             clipboard_history_max_entries = 20;
+            screenshot.directory = "${config.home.homeDirectory}/Pictures";
           };
 
           bar = {
