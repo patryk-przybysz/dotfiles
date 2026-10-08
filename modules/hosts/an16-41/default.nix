@@ -151,6 +151,7 @@
         mcsr
         obs
         haruna
+        libreoffice
         qimgv
         vesktop
       ];
