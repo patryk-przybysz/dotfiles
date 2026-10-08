@@ -27,6 +27,11 @@
 
       home.packages = screenToolkitPackages ++ [ pkgs.libnotify ];
 
+      # Built-in local plugin source. Reports active state, which
+      # yocraft/custom-shortcut cannot do.
+      xdg.dataFile."noctalia/plugins/hotspot/plugin.toml".source = ./noctalia-hotspot/plugin.toml;
+      xdg.dataFile."noctalia/plugins/hotspot/shortcut.luau".source = ./noctalia-hotspot/shortcut.luau;
+
       programs.noctalia = {
         enable = true;
         package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -126,11 +131,25 @@
           };
 
           # Other features append their own plugins.
-          plugins.enabled = [ "alexander/screen-toolkit" ];
+          plugins.enabled = [
+            "alexander/screen-toolkit"
+            "patryk/hotspot"
+          ];
 
           plugin_settings."alexander/screen-toolkit" = {
             "selected-ocr-lang" = "eng+pol";
           };
+
+          # The home tab shows at most 6 shortcuts. Hotspot replaces power profile.
+          # Edit SSID, password, and channel in nm-connection-editor.
+          control_center.shortcuts = [
+            { type = "patryk/hotspot:shortcut"; }
+            { type = "wifi"; }
+            { type = "bluetooth"; }
+            { type = "caffeine"; }
+            { type = "nightlight"; }
+            { type = "notification"; }
+          ];
 
           widget = {
             clock = {

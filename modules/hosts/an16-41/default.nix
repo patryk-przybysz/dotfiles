@@ -60,7 +60,25 @@
         networking = {
           hostName = "an16-41";
           networkmanager.enable = true;
+
+          # DHCP/DNS for NetworkManager's shared AP. The Hotspot profile itself
+          # lives in NetworkManager so nm-connection-editor can change it.
+          firewall.interfaces.wlp4s0 = {
+            allowedUDPPorts = [
+              53
+              67
+            ];
+            allowedTCPPorts = [ 53 ];
+          };
+
+          nat = {
+            enable = true;
+            internalIPs = [ "10.42.0.0/24" ];
+            externalInterface = "enp3s0";
+          };
         };
+
+        environment.systemPackages = [ pkgs.networkmanagerapplet ];
 
         time.timeZone = "Europe/Warsaw";
 

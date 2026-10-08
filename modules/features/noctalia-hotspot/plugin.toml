@@ -1,0 +1,11 @@
+id = "patryk/hotspot"
+name = "Hotspot"
+version = "1.0.0"
+plugin_api = 3
+author = "patryk"
+description = "Toggle the saved NetworkManager Hotspot connection."
+dependencies = ["nmcli"]
+
+[[shortcut]]
+id = "shortcut"
+entry = "shortcut.luau"
