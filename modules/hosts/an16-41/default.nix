@@ -172,6 +172,7 @@
         libreoffice
         qimgv
         vesktop
+        cursor
       ];
 
       # https://its-saanvi.github.io/linux-mcsr/tmpfs.html
