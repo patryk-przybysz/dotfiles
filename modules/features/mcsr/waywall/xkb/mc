@@ -20,7 +20,7 @@ xkb_symbols "basic" {
     key <SCLK> { [ Scroll_Lock, VoidSymbol ] };
     key <PAUS> { [ Pause, VoidSymbol ] };
     key <TLDE> { [ U0060, U007E ] };
-    key <AE01> { [ U002B, I ] };
+    key <AE01> { [ U002B, U ] };
     key <AE02> { [ 4, V ] };
     key <AE03> { [ u, E ] };
     key <AE04> { [ e, J ] };
