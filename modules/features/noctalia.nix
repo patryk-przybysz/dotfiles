@@ -155,6 +155,9 @@
             clock = {
               format = "{:%a, %d %b %Y %H:%M}";
             };
+            weather = {
+              show_condition = false;
+            };
             clock_weather_gap = {
               type = "spacer";
               length = 20;
