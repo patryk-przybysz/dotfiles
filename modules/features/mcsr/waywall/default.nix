@@ -1,9 +1,9 @@
 { inputs, ... }:
 {
   features.mcsr.homeManager =
-    { pkgs, ... }:
+    { pkgs, inputs', ... }:
     let
-      mcsrPkgs = inputs.mcsr.packages.${pkgs.stdenv.hostPlatform.system};
+      mcsrPkgs = inputs'.mcsr.packages;
 
       # https://tesselslate.github.io/waywall/01_ninb.html (NixOS blank Swing window)
       ninjabrain-bot = mcsrPkgs.ninjabrain-bot.override {

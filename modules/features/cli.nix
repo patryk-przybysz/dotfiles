@@ -10,7 +10,7 @@
   };
 
   features.cli.homeManager =
-    { pkgs, ... }:
+    { pkgs, inputs', ... }:
     {
       programs = {
         fzf = {
@@ -37,7 +37,7 @@
         curl
         wget
         fastfetch
-        inputs.sem.packages.${pkgs.stdenv.hostPlatform.system}.default
+        inputs'.sem.packages.default
       ];
     };
 }

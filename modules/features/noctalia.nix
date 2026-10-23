@@ -3,7 +3,12 @@
   flake-file.inputs.noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
   features.noctalia.homeManager =
-    { config, pkgs, ... }:
+    {
+      config,
+      pkgs,
+      inputs',
+      ...
+    }:
     let
       wallpaperDir = "${config.home.homeDirectory}/Pictures/Wallpapers";
       wallpaperFile = "${wallpaperDir}/sylas.jpg";
@@ -34,7 +39,7 @@
 
       programs.noctalia = {
         enable = true;
-        package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        package = inputs'.noctalia.packages.default;
 
         settings = {
           notification = {

@@ -12,10 +12,11 @@
       config,
       lib,
       pkgs,
+      inputs',
       ...
     }:
     let
-      mcsrPkgs = inputs.mcsr.packages.${pkgs.stdenv.hostPlatform.system};
+      mcsrPkgs = inputs'.mcsr.packages;
       glfw3-minecraft = pkgs.callPackage ./_glfw.nix { };
     in
     {

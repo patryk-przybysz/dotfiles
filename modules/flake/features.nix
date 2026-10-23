@@ -94,6 +94,7 @@ let
   everywhere = user: lib.optional (features ? ${user}) features.${user};
 
   pkgsFor = system: withSystem system ({ pkgs, ... }: pkgs);
+  inputsFor = system: withSystem system ({ inputs', ... }: inputs');
 in
 {
   options = {
@@ -136,20 +137,24 @@ in
           )
         ]
         ++ halves "nixos" ([ host ] ++ lib.concatMap userRoots users)
-        ++ lib.optional (users != [ ]) {
-          imports = [ inputs.home-manager.nixosModules.home-manager ];
-          home-manager = {
-            useGlobalPkgs = lib.mkDefault true;
-            useUserPackages = lib.mkDefault true;
-            users = lib.genAttrs users (user: {
-              imports = halves "homeManager" ([ host ] ++ userRoots user) ++ [
-                {
-                  home.stateVersion = lib.mkDefault defaultHomeStateVersion;
-                }
-              ];
-            });
-          };
-        };
+        ++ lib.optional (users != [ ]) (
+          { config, ... }:
+          {
+            imports = [ inputs.home-manager.nixosModules.home-manager ];
+            home-manager = {
+              useGlobalPkgs = lib.mkDefault true;
+              useUserPackages = lib.mkDefault true;
+              extraSpecialArgs.inputs' = inputsFor config.nixpkgs.hostPlatform.system;
+              users = lib.genAttrs users (user: {
+                imports = halves "homeManager" ([ host ] ++ userRoots user) ++ [
+                  {
+                    home.stateVersion = lib.mkDefault defaultHomeStateVersion;
+                  }
+                ];
+              });
+            };
+          }
+        );
       }
     ) config.hosts;
 
@@ -160,6 +165,7 @@ in
       in
       inputs.home-manager.lib.homeManagerConfiguration {
         pkgs = pkgsFor home.system;
+        extraSpecialArgs.inputs' = inputsFor home.system;
         modules = halves "homeManager" (everywhere user ++ [ home ]) ++ [
           {
             home = {

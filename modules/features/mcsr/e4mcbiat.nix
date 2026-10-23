@@ -11,7 +11,7 @@
     {
       config,
       lib,
-      pkgs,
+      inputs',
       ...
     }:
     {
@@ -22,7 +22,7 @@
       };
 
       config = lib.mkIf config.my.home.mcsr.e4mcbiat.enable {
-        home.packages = [ inputs.e4mcbiat.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+        home.packages = [ inputs'.e4mcbiat.packages.default ];
       };
     };
 }
