@@ -16,6 +16,7 @@
     }:
     let
       mcsrPkgs = inputs.mcsr.packages.${pkgs.stdenv.hostPlatform.system};
+      glfw3-minecraft = pkgs.callPackage ./_glfw.nix { };
     in
     {
       home.packages = [
@@ -26,6 +27,8 @@
           name = "prismlauncher";
           paths = [
             (pkgs.prismlauncher.override {
+              inherit glfw3-minecraft;
+
               jdks = [
                 mcsrPkgs.graalvm-21
                 pkgs.temurin-bin-25
