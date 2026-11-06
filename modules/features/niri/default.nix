@@ -235,6 +235,16 @@
                 "playerctl"
                 "stop"
               ];
+              "XF86MonBrightnessDown".action.spawn = [
+                "brightnessctl"
+                "set"
+                "5%-"
+              ];
+              "XF86MonBrightnessUp".action.spawn = [
+                "brightnessctl"
+                "set"
+                "5%+"
+              ];
 
               "XF86Explorer".action.spawn = [
                 "thunar"
@@ -279,6 +289,7 @@
         home.packages = [
           pkgs.xwayland-satellite
           pkgs.playerctl
+          pkgs.brightnessctl
         ];
 
         programs.niri = {

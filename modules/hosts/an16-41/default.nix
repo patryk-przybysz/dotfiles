@@ -156,6 +156,7 @@
             "networkmanager"
             "wheel"
             "gamemode"
+            "video"
           ];
         };
 
