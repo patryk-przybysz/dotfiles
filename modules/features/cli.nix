@@ -1,16 +1,6 @@
-{ inputs, ... }:
 {
-  flake-file.inputs.sem = {
-    url = "github:Ataraxy-Labs/sem";
-    inputs = {
-      nixpkgs.follows = "nixpkgs";
-      rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
-      flake-utils.inputs.systems.follows = "systems";
-    };
-  };
-
   features.cli.homeManager =
-    { pkgs, inputs', ... }:
+    { pkgs, ... }:
     {
       programs = {
         fzf = {
@@ -37,7 +27,6 @@
         curl
         wget
         fastfetch
-        inputs'.sem.packages.default
       ];
     };
 }

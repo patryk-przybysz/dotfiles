@@ -48,14 +48,6 @@
     };
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
-    sem = {
-      url = "github:Ataraxy-Labs/sem";
-      inputs = {
-        flake-utils.inputs.systems.follows = "systems";
-        nixpkgs.follows = "nixpkgs";
-        rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
-      };
-    };
     system-manager = {
       url = "github:numtide/system-manager";
       inputs = {
